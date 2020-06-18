@@ -1,31 +1,35 @@
 /* eslint-disable linebreak-style */
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('users', {
+    return queryInterface.createTable('address', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
+      street: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      cpf: {
+      number: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      rg: {
+      complement: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      city: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      email: {
+      state: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
       },
-      password_hash: {
+      country: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -39,7 +43,8 @@ module.exports = {
       },
     });
   },
+
   down: queryInterface => {
-    return queryInterface.dropTable('users');
+    return queryInterface.dropTable('address');
   },
 };

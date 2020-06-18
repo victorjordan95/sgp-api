@@ -10,6 +10,12 @@ class Roles extends Model {
         sequelize,
       }
     );
+
+    return this;
+  }
+
+  static associate(models) {
+    this.belongsTo(models.User, { foreignKey: 'role' });
   }
 }
 
