@@ -9,6 +9,7 @@ class User extends Model {
         cpf: Sequelize.NUMBER,
         rg: Sequelize.STRING,
         password_hash: Sequelize.STRING,
+        status: Sequelize.BOOLEAN,
       },
       {
         sequelize,
