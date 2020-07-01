@@ -6,7 +6,7 @@ import User from '../models/User';
 
 class UserController {
   async index(req, res) {
-    const users = await User.findAll({
+    const userAttributes = {
       attributes: [
         'id',
         'name',
@@ -35,14 +35,16 @@ class UserController {
           ],
         },
       ],
-    });
+    };
+
+    let users;
+    if (req.params.id) {
+      users = await User.findByPk(req.params.id, userAttributes);
+    } else {
+      users = await User.findAll(userAttributes);
+    }
 
     return res.json(users);
-  }
-
-  async findById(req, res) {
-    const user = await User.findByPk(req.params.id);
-    return res.json(user);
   }
 
   async store(req, res) {
@@ -60,15 +62,19 @@ class UserController {
   }
 
   async update(req, res) {
-    const { email } = req.body;
+    const { email, oldPassword } = req.body;
     const { cellphone, phone } = req.body;
     const { street, city, complement, country, number, state } = req.body;
 
-    const user = await User.findByPk(req.params.id);
+    let user;
+    if (req.params.id) {
+      user = await User.findByPk(req.params.id);
+    } else {
+      user = await User.findByPk(req.userId);
+    }
 
     if (email && email !== user.email) {
       const userExists = await User.findOne({ where: { email } });
-
       if (userExists) {
         return res.status(400).json({ error: 'User already exists.' });
       }
@@ -84,8 +90,11 @@ class UserController {
       await userAddressUpdate.update(req.body);
     }
 
-    const { id, name } = await user.update(req.body);
+    if (oldPassword && !(await user.checkPassword(oldPassword))) {
+      return res.status(401).json({ error: 'Password does not match' });
+    }
 
+    const { id, name } = await user.update(req.body);
     return res.json({
       id,
       name,
