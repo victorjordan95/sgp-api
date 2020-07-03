@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
+import Session from '../models/Session';
 import authConfig from '../../config/auth';
 
 class SessionController {
@@ -8,15 +9,29 @@ class SessionController {
 
     const user = await User.findOne({ where: { email } });
 
-    if (!user) {
-      return res.status(401).json({ error: 'User not found' });
-    }
-
-    if (!(await user.checkPassword(password))) {
-      return res.status(401).json({ error: 'Password does not mach' });
+    if (!user || !(await user.checkPassword(password))) {
+      return res.status(401).json({ error: 'Credenciais não encontradas' });
     }
 
     const { id, name } = user;
+
+    const sessionToken = jwt.sign({ id }, authConfig.secret, {
+      expiresIn: authConfig.expires,
+    });
+
+    const userToken = await Session.findOne({ where: { user_id: id } });
+
+    if (userToken) {
+      await userToken.update({
+        session_token: sessionToken,
+        user_id: id,
+      });
+    } else {
+      await Session.create({
+        session_token: sessionToken,
+        user_id: id,
+      });
+    }
 
     return res.json({
       user: {
@@ -24,9 +39,15 @@ class SessionController {
         name,
         email,
       },
-      token: jwt.sign({ id }, authConfig.secret, {
-        expiresIn: authConfig.expires,
-      }),
+      token: sessionToken,
+    });
+  }
+
+  async index(req, res) {
+    const { session_token } = req.body;
+    const user = await Session.findOne({ where: { session_token } });
+    return res.json({
+      user,
     });
   }
 }
