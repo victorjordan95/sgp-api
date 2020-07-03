@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
 import Address from '../models/Address';
 import Contact from '../models/Contact';
 import Roles from '../models/Roles';
@@ -48,8 +49,16 @@ class UserController {
   }
 
   async store(req, res) {
-    const contactUser = await Contact.create(req.body);
+    const { email, cpf, rg } = req.body;
+    const userExists = await User.findOne({
+      where: { [Op.or]: [{ email }, { cpf }, { rg }] },
+    });
 
+    if (userExists) {
+      return res.status(400).json({ error: 'Usuário já existe!' });
+    }
+
+    const contactUser = await Contact.create(req.body);
     const addressUser = await Address.create(req.body);
 
     const user = await User.create({
