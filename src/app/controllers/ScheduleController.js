@@ -32,15 +32,15 @@ class ScheduleController {
       where: {
         doctor_id: req.userId,
         canceled_at: null,
-        date: {
+        start: {
           [Op.between]: [
             startOfMonth(formattedDate),
             lastDayOfMonth(formattedDate),
           ],
         },
       },
-      order: ['date'],
-      attributes: ['id', 'date', 'patient_id'],
+      attributes: ['id', 'title', 'start', 'end', 'all_day', 'patient_id'],
+      order: ['start'],
     });
 
     // const role = await Roles.create(req.body);

@@ -9,9 +9,22 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      date: {
+      title: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      start: {
         allowNull: false,
         type: Sequelize.DATE,
+      },
+      end: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+      all_day: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       doctor_id: {
         type: Sequelize.INTEGER,

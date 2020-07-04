@@ -8,23 +8,30 @@ import RoleEnum from '../enums/Roles.enum';
 
 class AppointmentController {
   async index(req, res) {
-    const { date = new Date() } = req.query;
+    const { start = new Date() } = req.query;
 
     const appointments = await Appointment.findAll({
       where: {
         patient_id: req.userId,
         canceled_at: null,
-        date: { [Op.between]: [startOfMonth(date), lastDayOfMonth(date)] },
+        start: { [Op.between]: [startOfMonth(start), lastDayOfMonth(start)] },
       },
-      order: ['date'],
-      attributes: ['id', 'date', 'doctor_id'],
+      order: ['start'],
+      attributes: ['id', 'start', 'doctor_id'],
+      include: [
+        {
+          model: User,
+          attributes: ['name'],
+        },
+      ],
     });
     return res.json(appointments);
   }
 
   async store(req, res) {
     const schema = Yup.object().shape({
-      date: Yup.date().required(),
+      start: Yup.date().required(),
+      end: Yup.date().required(),
       doctor_id: Yup.number().required(),
       patient_id: Yup.number().required(),
     });
@@ -33,20 +40,18 @@ class AppointmentController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { doctor_id, date } = req.body;
+    const { doctor_id, start, patient_id } = req.body;
     const isDoctor = await User.findOne({
-      where: {
-        id: doctor_id,
-        include: [
-          {
-            model: Roles,
-            attributes: ['role'],
-            where: {
-              role: RoleEnum.DOCTOR,
-            },
+      where: { id: doctor_id },
+      include: [
+        {
+          model: Roles,
+          attributes: ['role'],
+          where: {
+            role: RoleEnum.DOCTOR,
           },
-        ],
-      },
+        },
+      ],
     });
 
     const isEmployee = await User.findOne({
@@ -56,7 +61,7 @@ class AppointmentController {
           model: Roles,
           attributes: ['role'],
           where: {
-            role: RoleEnum.ADMIN,
+            role: RoleEnum.EMPLOYEE,
           },
         },
       ],
@@ -74,7 +79,15 @@ class AppointmentController {
       });
     }
 
-    const appointment = await Appointment.create(req.body);
+    const patientName = await User.findOne({
+      where: { id: patient_id },
+      attributes: ['name'],
+    });
+
+    const appointment = await Appointment.create({
+      ...req.body,
+      title: patientName.dataValues.name,
+    });
     return res.json(appointment);
   }
 }
