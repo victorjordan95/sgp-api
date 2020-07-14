@@ -2,6 +2,7 @@ import Sequelize from 'sequelize';
 
 import Address from '../app/models/Address';
 import Appointment from '../app/models/Appointment';
+import File from '../app/models/File';
 import Contact from '../app/models/Contact';
 import Roles from '../app/models/Roles';
 import Session from '../app/models/Session';
@@ -9,7 +10,7 @@ import User from '../app/models/User';
 
 import databaseConfig from '../config/database';
 
-const models = [Address, Appointment, Contact, Roles, Session, User];
+const models = [Address, Appointment, Contact, File, Roles, Session, User];
 
 class Database {
   constructor() {

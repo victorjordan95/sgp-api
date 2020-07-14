@@ -2,22 +2,14 @@ import * as Yup from 'yup';
 import { Op } from 'sequelize';
 import Address from '../models/Address';
 import Contact from '../models/Contact';
+import File from '../models/File';
 import Roles from '../models/Roles';
 import User from '../models/User';
 
 class UserController {
   async index(req, res) {
     const userAttributes = {
-      attributes: [
-        'id',
-        'name',
-        'email',
-        'cpf',
-        'rg',
-        'address',
-        'contact',
-        'status',
-      ],
+      attributes: ['id', 'name', 'email', 'cpf', 'rg', 'status'],
       include: [
         {
           model: Roles,
@@ -34,6 +26,14 @@ class UserController {
             'state',
             'country',
           ],
+        },
+        {
+          model: Contact,
+          attributes: ['phone', 'cellphone'],
+        },
+        {
+          model: File,
+          as: 'avatar',
         },
       ],
     };
@@ -71,7 +71,7 @@ class UserController {
   }
 
   async update(req, res) {
-    const { email, oldPassword } = req.body;
+    const { email, oldPassword, avatar_id } = req.body;
     const { cellphone, phone } = req.body;
     const { street, city, complement, country, number, state } = req.body;
 

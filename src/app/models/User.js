@@ -7,7 +7,7 @@ class User extends Model {
       {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
-        cpf: Sequelize.NUMBER,
+        cpf: Sequelize.STRING,
         rg: Sequelize.STRING,
         password: Sequelize.VIRTUAL,
         password_hash: Sequelize.STRING,
@@ -36,6 +36,8 @@ class User extends Model {
       foreignKey: 'address',
       as: 'address_pk',
     });
+
+    this.belongsTo(models.File, { foreignKey: 'avatar_id', as: 'avatar' });
 
     this.belongsTo(models.Roles, { foreignKey: 'role' });
     this.belongsTo(models.Contact, { foreignKey: 'contact' });
