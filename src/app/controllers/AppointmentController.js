@@ -21,6 +21,7 @@ class AppointmentController {
       include: [
         {
           model: User,
+          as: 'doctor',
           attributes: ['name'],
         },
       ],

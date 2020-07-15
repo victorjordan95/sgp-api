@@ -43,7 +43,6 @@ class ScheduleController {
       order: ['start'],
     });
 
-    // const role = await Roles.create(req.body);
     return res.json(appointments);
   }
 }
