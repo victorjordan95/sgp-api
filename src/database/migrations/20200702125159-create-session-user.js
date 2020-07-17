@@ -2,33 +2,31 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface
-      .createTable('session', {
-        id: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          autoIncrement: true,
-          primaryKey: true,
-        },
-        user_id: {
-          type: Sequelize.INTEGER,
-          references: { model: 'users', key: 'id' },
-          allowNull: false,
-        },
-        session_token: {
-          type: Sequelize.STRING,
-          allowNull: false,
-        },
-        created_at: {
-          type: Sequelize.DATE,
-          allowNull: false,
-        },
-        updated_at: {
-          type: Sequelize.DATE,
-          allowNull: false,
-        },
-      })
-      .then(() => queryInterface.addIndex('Todos', ['author_id', 'title']));
+    return queryInterface.createTable('session', {
+      id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      user_id: {
+        type: Sequelize.INTEGER,
+        references: { model: 'users', key: 'id' },
+        allowNull: false,
+      },
+      session_token: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+    });
   },
 
   down: queryInterface => {
