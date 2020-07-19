@@ -43,6 +43,9 @@ routes.get('/appointments', AppointmentController.index);
 routes.post('/appointments', AppointmentController.store);
 
 routes.get('/schedule', ScheduleController.index);
+routes.get('/notification-requests', ScheduleController.countRequests);
+routes.get('/schedule-requests', ScheduleController.indexRequests);
+routes.put('/schedule-requests', ScheduleController.approveRequest);
 
 routes.post('/roles', RoleController.store);
 

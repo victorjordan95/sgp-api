@@ -42,18 +42,24 @@ class AppointmentController {
     }
 
     const { doctor_id, start, patient_id } = req.body;
-    const isDoctor = await User.findOne({
-      where: { id: doctor_id },
-      include: [
-        {
-          model: Roles,
-          attributes: ['role'],
-          where: {
-            role: RoleEnum.DOCTOR,
-          },
-        },
-      ],
-    });
+    // const isDoctor = await User.findOne({
+    //   where: { id: doctor_id },
+    //   include: [
+    //     {
+    //       model: Roles,
+    //       attributes: ['role'],
+    //       where: {
+    //         role: RoleEnum.DOCTOR,
+    //       },
+    //     },
+    //   ],
+    // });
+
+    // if (!isDoctor) {
+    //   return res.status(401).json({
+    //     error: `Você só pode agendar consultas para usuários do tipo ${RoleEnum.DOCTOR}`,
+    //   });
+    // }
 
     const isEmployee = await User.findOne({
       where: { id: req.userId },
@@ -68,16 +74,11 @@ class AppointmentController {
       ],
     });
 
-    if (!isDoctor) {
-      return res.status(401).json({
-        error: `Você só pode agendar consultas para usuários do tipo ${RoleEnum.DOCTOR}`,
-      });
-    }
-
-    if (!isEmployee) {
-      return res.status(401).json({
-        error: 'Você não possui autorização para fazer este tipo de ação!',
-      });
+    let status;
+    if (isEmployee) {
+      status = { status: 'AGENDADO' };
+    } else {
+      status = { status: 'AGUARDANDO' };
     }
 
     const patientName = await User.findOne({
@@ -88,6 +89,7 @@ class AppointmentController {
     const appointment = await Appointment.create({
       ...req.body,
       title: patientName.dataValues.name,
+      ...status,
     });
     return res.json(appointment);
   }

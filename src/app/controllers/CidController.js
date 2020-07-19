@@ -19,7 +19,7 @@ class CidController {
         where: Sequelize.where(
           Sequelize.fn('unaccent', Sequelize.col(`${type}`)),
           {
-            [Op.iLike]: `%${`${name}`}%`,
+            [Op.iLike]: `%${name}%`,
           }
         ),
       };
