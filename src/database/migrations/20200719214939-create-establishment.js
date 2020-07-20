@@ -2,51 +2,50 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('appointment', {
+    return queryInterface.createTable('establishment', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      title: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      start: {
-        allowNull: false,
-        type: Sequelize.DATE,
+      address: {
+        type: Sequelize.INTEGER,
+        references: { model: 'address', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
-      end: {
-        allowNull: false,
-        type: Sequelize.DATE,
+      contact: {
+        type: Sequelize.INTEGER,
+        references: { model: 'contact', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
-      all_day: {
+      cnpj: {
+        type: Sequelize.STRING,
         allowNull: false,
+      },
+      has_bed: {
         type: Sequelize.BOOLEAN,
+        allowNull: false,
         defaultValue: false,
       },
-      doctor_id: {
+      amount_bed: {
         type: Sequelize.INTEGER,
-        references: { model: 'user', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
         allowNull: true,
       },
-      patient_id: {
-        type: Sequelize.INTEGER,
-        references: { model: 'user', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-        allowNull: true,
+      is_pharmacy: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
-      },
-      canceled_at: {
-        type: Sequelize.DATE,
-        allowNull: true,
       },
       updated_at: {
         type: Sequelize.DATE,
@@ -56,6 +55,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('appointment');
+    return queryInterface.dropTable('establishment');
   },
 };

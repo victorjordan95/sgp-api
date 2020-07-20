@@ -6,6 +6,7 @@ import AppointmentController from './app/controllers/AppointmentController';
 import CidController from './app/controllers/CidController';
 import DoctorController from './app/controllers/DoctorController';
 import EmployeeController from './app/controllers/EmployeeController';
+import EstablishmentController from './app/controllers/EstablishmentController';
 import FileController from './app/controllers/FileController';
 import PatientController from './app/controllers/PatientController';
 import RoleController from './app/controllers/RoleController';
@@ -48,5 +49,11 @@ routes.get('/schedule-requests', ScheduleController.indexRequests);
 routes.put('/schedule-requests', ScheduleController.approveRequest);
 
 routes.post('/roles', RoleController.store);
+
+// ROTAS PARA ADMIN
+// CRIAR UM MIDDLE
+routes.get('/establishment', EstablishmentController.index);
+routes.post('/establishment', EstablishmentController.store);
+routes.put('/establishment', EstablishmentController.update);
 
 export default routes;

@@ -10,6 +10,12 @@ class Address extends Model {
         city: Sequelize.STRING,
         state: Sequelize.STRING,
         country: Sequelize.STRING,
+        full_address: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return `${this.street}, ${this.number}, ${this.city}, ${this.state}, ${this.country}`;
+          },
+        },
       },
       {
         sequelize,

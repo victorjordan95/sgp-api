@@ -1,7 +1,7 @@
-import * as Yup from 'yup';
 import { Op } from 'sequelize';
 import Address from '../models/Address';
 import Contact from '../models/Contact';
+import Establishment from '../models/Establishment';
 import File from '../models/File';
 import Roles from '../models/Roles';
 import User from '../models/User';
@@ -9,7 +9,7 @@ import User from '../models/User';
 class UserController {
   async index(req, res) {
     const userAttributes = {
-      attributes: ['id', 'name', 'email', 'cpf', 'rg', 'status'],
+      attributes: ['id', 'name', 'email', 'cpf', 'rg', 'status', 'role'],
       include: [
         {
           model: Roles,
@@ -19,6 +19,7 @@ class UserController {
           model: Address,
           as: 'address_pk',
           attributes: [
+            'full_address',
             'street',
             'number',
             'complement',
@@ -61,11 +62,16 @@ class UserController {
     const contactUser = await Contact.create(req.body);
     const addressUser = await Address.create(req.body);
 
+    const { establishments, ...data } = req.body;
     const user = await User.create({
       ...req.body,
       address: addressUser.id,
       contact: contactUser.id,
     });
+
+    if (establishments) {
+      user.setEstablishments(establishments);
+    }
 
     return res.json(user);
   }
@@ -103,10 +109,15 @@ class UserController {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
-    const { id, name } = await user.update(req.body);
+    const { establishments, ...data } = req.body;
+    const createdUser = await user.update(data);
+
+    if (establishments) {
+      createdUser.setEstablishments(establishments);
+    }
+
     return res.json({
-      id,
-      name,
+      createdUser,
     });
   }
 

@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import { Op } from 'sequelize';
 import Address from '../models/Address';
 import Roles from '../models/Roles';
 import User from '../models/User';
@@ -20,7 +21,7 @@ class EmployeeController {
         {
           model: Roles,
           where: {
-            role: RoleEnum.EMPLOYEE,
+            [Op.or]: [{ role: RoleEnum.DOCTOR }, { role: RoleEnum.EMPLOYEE }],
           },
         },
         {

@@ -1,7 +1,7 @@
 /* eslint-disable linebreak-style */
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.addColumn('appointments', 'status', {
+    return queryInterface.addColumn('appointment', 'status', {
       type: Sequelize.STRING,
       allowNull: false,
       defaultValue: 'AGUARDANDO',
@@ -9,6 +9,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.removeColumn('appointments', 'status');
+    return queryInterface.removeColumn('appointment', 'status');
   },
 };

@@ -42,6 +42,12 @@ class User extends Model {
     this.belongsTo(models.Roles, { foreignKey: 'role' });
     this.belongsTo(models.Contact, { foreignKey: 'contact' });
     this.hasOne(models.Session, { foreignKey: 'user_id' });
+
+    this.belongsToMany(models.Establishment, {
+      through: 'user_establishment',
+      as: 'establishments',
+      foreignKey: 'user_id',
+    });
   }
 }
 
