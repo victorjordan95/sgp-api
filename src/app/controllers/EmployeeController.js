@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import { Op } from 'sequelize';
 import Address from '../models/Address';
 import Roles from '../models/Roles';

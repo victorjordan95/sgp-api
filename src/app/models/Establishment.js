@@ -32,6 +32,12 @@ class Establishment extends Model {
       as: 'users',
       foreignKey: 'establishment_id',
     });
+
+    this.belongsToMany(models.MedicineCategory, {
+      through: 'establishment_medicine_category',
+      as: 'categories',
+      foreignKey: 'establishment_id',
+    });
   }
 }
 

@@ -2,17 +2,12 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('cid', {
+    return queryInterface.createTable('medicine_category', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-      },
-      code: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
       },
       name: {
         type: Sequelize.STRING,
@@ -31,7 +26,7 @@ module.exports = {
     });
   },
 
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('cid');
+  down: queryInterface => {
+    return queryInterface.dropTable('medicine_category');
   },
 };

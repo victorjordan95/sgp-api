@@ -16,6 +16,11 @@ class UserController {
           attributes: ['role'],
         },
         {
+          model: Establishment,
+          attributes: ['name'],
+          as: 'establishments',
+        },
+        {
           model: Address,
           as: 'address_pk',
           attributes: [

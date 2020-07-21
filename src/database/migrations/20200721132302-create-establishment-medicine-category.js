@@ -2,12 +2,26 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('user_establishment', {
+    return queryInterface.createTable('establishment_medicine_category', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
+      },
+
+      medicine_id: {
+        type: Sequelize.INTEGER,
+        references: { model: 'medicine_category', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
+
+      establishment_id: {
+        type: Sequelize.INTEGER,
+        references: { model: 'establishment', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
 
       created_at: {
@@ -18,20 +32,6 @@ module.exports = {
       updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
-      },
-
-      user_id: {
-        type: Sequelize.INTEGER,
-        references: { model: 'user', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-      },
-
-      establishment_id: {
-        type: Sequelize.INTEGER,
-        references: { model: 'establishment', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
       },
     });
   },
