@@ -1,13 +1,24 @@
 import { Op } from 'sequelize';
 import Address from '../models/Address';
-import Roles from '../models/Roles';
+import Establishment from '../models/Establishment';
 import User from '../models/User';
+import Roles from '../models/Roles';
 import RoleEnum from '../enums/Roles.enum';
 
 class EmployeeController {
   async index(req, res) {
     const { page = 1 } = req.query;
     const AMOUNT_PAGE = 10;
+
+    const loggedUser = await User.findByPk(req.userId, {
+      include: [
+        {
+          model: Establishment,
+          as: 'establishments',
+          attributes: ['id'],
+        },
+      ],
+    });
 
     const userAttributes = {
       attributes: ['id', 'name', 'email', 'cpf', 'rg'],
@@ -18,15 +29,29 @@ class EmployeeController {
       },
       include: [
         {
-          model: Roles,
-          where: {
-            [Op.or]: [{ role: RoleEnum.DOCTOR }, { role: RoleEnum.EMPLOYEE }],
-          },
-        },
-        {
           model: Address,
           as: 'address_pk',
           attributes: ['city'],
+        },
+        {
+          model: Establishment,
+          as: 'establishments',
+          attributes: ['id'],
+          where: {
+            id: {
+              [Op.in]: [loggedUser.establishments[0].id],
+            },
+          },
+        },
+        {
+          model: Roles,
+          where: {
+            [Op.or]: [
+              { role: RoleEnum.DOCTOR },
+              { role: RoleEnum.EMPLOYEE },
+              { role: RoleEnum.ADMIN },
+            ],
+          },
         },
       ],
     };

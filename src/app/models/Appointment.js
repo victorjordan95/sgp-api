@@ -13,6 +13,7 @@ class Appointment extends Model {
       },
       {
         sequelize,
+        tableName: 'appointment',
       }
     );
 

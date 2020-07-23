@@ -145,7 +145,11 @@ class ScheduleController {
           model: Roles,
           attributes: ['role'],
           where: {
-            [Op.or]: [{ role: RoleEnum.DOCTOR }, { role: RoleEnum.EMPLOYEE }],
+            [Op.or]: [
+              { role: RoleEnum.DOCTOR },
+              { role: RoleEnum.EMPLOYEE },
+              { role: RoleEnum.ADMIN },
+            ],
           },
         },
       ],

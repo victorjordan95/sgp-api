@@ -15,6 +15,7 @@ class User extends Model {
       },
       {
         sequelize,
+        tableName: 'user',
       }
     );
 

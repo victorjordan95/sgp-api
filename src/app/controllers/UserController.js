@@ -17,7 +17,7 @@ class UserController {
         },
         {
           model: Establishment,
-          attributes: ['name'],
+          attributes: ['name', 'id'],
           as: 'establishments',
         },
         {

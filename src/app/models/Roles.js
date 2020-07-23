@@ -8,6 +8,7 @@ class Roles extends Model {
       },
       {
         sequelize,
+        tableName: 'role',
       }
     );
 
