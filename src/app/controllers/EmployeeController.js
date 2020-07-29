@@ -10,15 +10,19 @@ class EmployeeController {
     const { page = 1 } = req.query;
     const AMOUNT_PAGE = 10;
 
-    const loggedUser = await User.findByPk(req.userId, {
+    const employee = await User.findOne({
+      where: { id: req.userId },
       include: [
         {
           model: Establishment,
-          as: 'establishments',
           attributes: ['id'],
+          as: 'establishments',
         },
       ],
     });
+    const employeeEstabId = employee.establishments[0].user_establishment.get(
+      'establishment_id'
+    );
 
     const userAttributes = {
       attributes: ['id', 'name', 'email', 'cpf', 'rg'],
@@ -38,9 +42,7 @@ class EmployeeController {
           as: 'establishments',
           attributes: ['id'],
           where: {
-            id: {
-              [Op.in]: [loggedUser.establishments[0].id],
-            },
+            id: employeeEstabId,
           },
         },
         {
