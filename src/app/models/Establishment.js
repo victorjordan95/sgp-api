@@ -9,6 +9,8 @@ class Establishment extends Model {
         has_bed: Sequelize.BOOLEAN,
         amount_bed: Sequelize.INTEGER,
         is_pharmacy: Sequelize.BOOLEAN,
+        is_public: Sequelize.BOOLEAN,
+        location: Sequelize.GEOMETRY('POINT'),
       },
       {
         sequelize,

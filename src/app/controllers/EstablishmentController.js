@@ -1,3 +1,4 @@
+import { literal, fn, where, Op, Sequelize } from 'sequelize';
 import Address from '../models/Address';
 import Contact from '../models/Contact';
 import Establishment from '../models/Establishment';
@@ -5,40 +6,77 @@ import MedicineCategory from '../models/MedicineCategory';
 
 class EstablishmentController {
   async index(req, res) {
-    const userAttributes = {
-      attributes: ['id', 'name', 'has_bed', 'amount_bed', 'is_pharmacy'],
-      include: [
-        {
-          model: Address,
-          as: 'address_pk',
-          attributes: [
-            'street',
-            'number',
-            'complement',
-            'city',
-            'state',
-            'country',
-          ],
-        },
-        {
-          model: Contact,
-          attributes: ['phone', 'cellphone'],
-        },
-        {
-          model: MedicineCategory,
-          as: 'categories',
-          attributes: ['name', 'id'],
-        },
-      ],
-    };
+    const { name = '' } = req.query;
+
+    const attributes = [
+      'id',
+      'name',
+      'has_bed',
+      'amount_bed',
+      'is_pharmacy',
+      'is_public',
+    ];
+
+    const establishmentAttributes = [
+      {
+        model: Address,
+        as: 'address_pk',
+        attributes: [
+          'full_address',
+          'street',
+          'number',
+          'complement',
+          'city',
+          'state',
+          'country',
+        ],
+      },
+      {
+        model: Contact,
+        attributes: ['phone', 'cellphone'],
+      },
+      {
+        model: MedicineCategory,
+        as: 'categories',
+        attributes: ['name', 'id'],
+        where: Sequelize.where(
+          Sequelize.fn('unaccent', Sequelize.col('categories.name')),
+          {
+            [Op.iLike]: `%${name}%`,
+          }
+        ),
+      },
+    ];
+
     let establishment;
     if (req.params.id) {
-      establishment = await Establishment.findByPk(
-        req.params.id,
-        userAttributes
-      );
+      establishment = await Establishment.findByPk(req.params.id, {
+        ...attributes,
+        ...establishmentAttributes,
+      });
     } else {
-      establishment = await Establishment.findAll(userAttributes);
+      const lat = parseFloat(req.query.lat);
+      const lng = parseFloat(req.query.lng);
+      const location = literal(`ST_GeomFromText('POINT(${lat} ${lng})', 4326)`);
+      const distance = fn('ST_Distance_Sphere', literal('location'), location);
+
+      const query = {
+        attributes: [
+          [fn('ST_Distance_Sphere', literal('location'), location), 'distance'],
+          'id',
+          'name',
+          'has_bed',
+          'amount_bed',
+          'is_pharmacy',
+          'is_public',
+          'location',
+        ],
+        order: distance,
+        include: establishmentAttributes,
+        limit: 50,
+        subQuery: false,
+      };
+      establishment = await Establishment.findAll(query);
     }
 
     return res.json(establishment);
@@ -47,15 +85,17 @@ class EstablishmentController {
   async store(req, res) {
     const contactUser = await Contact.create(req.body);
     const addressUser = await Address.create(req.body);
-
-    const { categories } = req.body;
+    const [lat, lng] = req.body.geometry;
+    const point = { type: 'Point', coordinates: [lat, lng] };
 
     const establishment = await Establishment.create({
       ...req.body,
+      location: point,
       address: addressUser.id,
       contact: contactUser.id,
     });
 
+    const { categories } = req.body;
     if (categories) {
       establishment.setCategories(categories);
     }
@@ -64,12 +104,18 @@ class EstablishmentController {
   }
 
   async update(req, res) {
-    const { cellphone, phone } = req.body;
+    const { cellphone, phone, id } = req.body;
     const { street, city, complement, country, number, state } = req.body;
 
+    let lat;
+    let lng;
+    if (req.body.geometry) {
+      [lat, lng] = req.body.geometry;
+    }
+
     let establishment;
-    if (req.params.id) {
-      establishment = await Establishment.findByPk(req.params.id);
+    if (id) {
+      establishment = await Establishment.findByPk(id);
     }
 
     if (cellphone || phone) {
@@ -81,18 +127,23 @@ class EstablishmentController {
       const userAddressUpdate = await Address.findByPk(establishment.address);
       await userAddressUpdate.update(req.body);
     }
-
-    const { id, name } = await establishment.update(req.body);
-    const { categories } = req.body;
-
-    if (categories) {
-      establishment.setMedicineCategories(categories);
+    let updatedEstab;
+    if (lat && lng) {
+      const point = { type: 'Point', coordinates: [lat, lng] };
+      updatedEstab = await establishment.update({
+        ...req.body,
+        location: point,
+      });
+    } else {
+      updatedEstab = await establishment.update(req.body);
     }
 
-    return res.json({
-      id,
-      name,
-    });
+    const { categories } = req.body;
+    if (categories) {
+      establishment.setCategories(categories);
+    }
+
+    return res.json(updatedEstab);
   }
 
   async delete(req, res) {
