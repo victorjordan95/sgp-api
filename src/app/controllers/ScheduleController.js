@@ -2,6 +2,7 @@ import { Sequelize, Op, query, QueryTypes } from 'sequelize';
 import { startOfMonth, lastDayOfMonth } from 'date-fns';
 import Appointment from '../models/Appointment';
 import Contact from '../models/Contact';
+import Establishment from '../models/Establishment';
 import Roles from '../models/Roles';
 import User from '../models/User';
 import RoleEnum from '../enums/Roles.enum';
@@ -53,7 +54,7 @@ class ScheduleController {
     const { name } = req.query;
     const AMOUNT_PAGE = 50;
 
-    const isDoctor = await User.findOne({
+    const employee = await User.findOne({
       where: { id: req.userId },
       include: [
         {
@@ -63,28 +64,54 @@ class ScheduleController {
             [Op.or]: [{ role: RoleEnum.DOCTOR }, { role: RoleEnum.EMPLOYEE }],
           },
         },
+        {
+          model: Establishment,
+          attributes: ['id'],
+          as: 'establishments',
+        },
       ],
     });
 
-    if (!isDoctor) {
+    const employeeEstabId = employee.establishments[0].user_establishment.get(
+      'establishment_id'
+    );
+
+    if (!employee) {
       return res.status(401).json({
         error: `Você não tem permissão para este tipo de acesso!`,
       });
     }
 
     let userAttributes = {
-      attributes: ['id', 'title', 'start', 'end', 'all_day', 'patient_id'],
+      attributes: [
+        'id',
+        'title',
+        'start',
+        'end',
+        'all_day',
+        'patient_id',
+        'doctor_id',
+      ],
       include: [
+        {
+          model: User,
+          as: 'doctor',
+          attributes: ['name'],
+          include: [
+            {
+              model: Establishment,
+              attributes: ['name', 'id'],
+              as: 'establishments',
+              where: {
+                id: employeeEstabId,
+              },
+            },
+          ],
+        },
         {
           model: User,
           as: 'patient',
           attributes: ['name'],
-          include: [
-            {
-              model: Contact,
-              attributes: ['phone', 'cellphone'],
-            },
-          ],
         },
       ],
       where: {
@@ -106,9 +133,8 @@ class ScheduleController {
       };
     }
 
-    const appointments = await Appointment.findAndCountAll(userAttributes);
-
-    return res.json(appointments);
+    const appointments = await Appointment.findAll(userAttributes);
+    return res.json({ count: appointments.length, rows: appointments });
   }
 
   async approveRequest(req, res) {
@@ -138,39 +164,62 @@ class ScheduleController {
   }
 
   async countRequests(req, res) {
-    const isDoctor = await User.findOne({
+    const AMOUNT_PAGE = 10000;
+    const employee = await User.findOne({
       where: { id: req.userId },
       include: [
         {
           model: Roles,
           attributes: ['role'],
           where: {
-            [Op.or]: [
-              { role: RoleEnum.DOCTOR },
-              { role: RoleEnum.EMPLOYEE },
-              { role: RoleEnum.ADMIN },
-            ],
+            [Op.or]: [{ role: RoleEnum.DOCTOR }, { role: RoleEnum.EMPLOYEE }],
           },
+        },
+        {
+          model: Establishment,
+          attributes: ['id'],
+          as: 'establishments',
         },
       ],
     });
 
-    if (!isDoctor) {
+    const employeeEstabId = employee.establishments[0].user_establishment.get(
+      'establishment_id'
+    );
+
+    if (!employee) {
       return res.status(401).json({
         error: `Você não tem permissão para este tipo de acesso!`,
       });
     }
 
     const userAttributes = {
+      include: [
+        {
+          model: User,
+          as: 'doctor',
+          attributes: ['name'],
+          include: [
+            {
+              model: Establishment,
+              as: 'establishments',
+              where: {
+                id: employeeEstabId,
+              },
+            },
+          ],
+        },
+      ],
       where: {
         canceled_at: null,
         status: 'AGUARDANDO',
       },
+      order: ['start'],
+      limit: AMOUNT_PAGE,
     };
 
-    const appointments = await Appointment.count(userAttributes);
-
-    return res.json(appointments);
+    const appointments = await Appointment.findAll(userAttributes);
+    return res.json({ count: appointments.length });
   }
 }
 
