@@ -1,3 +1,7 @@
+BEGIN;
+CREATE EXTENSION unaccent;
+CREATE EXTENSION postgis;
+CREATE EXTENSION postgis_topology;
 INSERT INTO cid(code,name, created_at, updated_at) VALUES ('A00','Cólera', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
 INSERT INTO cid(code,name, created_at, updated_at) VALUES ('A00.0','Cólera Devida a Vibrio Cholerae 01, Biótipo Cholerae', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
 INSERT INTO cid(code,name, created_at, updated_at) VALUES ('A00.1','Cólera Devida a Vibrio Cholerae 01, Biótipo El Tor', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
@@ -14231,3 +14235,4 @@ INSERT INTO cid(code,name, created_at, updated_at) VALUES ('Z99.2','Dependência
 INSERT INTO cid(code,name, created_at, updated_at) VALUES ('Z99.3','Dependência de Cadeira de Rodas', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
 INSERT INTO cid(code,name, created_at, updated_at) VALUES ('Z99.8','Dependência de Outras Máquinas e Aparelhos Capacitantes', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
 INSERT INTO cid(code,name, created_at, updated_at) VALUES ('Z99.9','Dependência de Máquina e Aparelho Capacitante Não Especificado', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
+COMMIT;

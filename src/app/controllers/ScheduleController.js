@@ -1,7 +1,6 @@
-import { Sequelize, Op, query, QueryTypes } from 'sequelize';
+import { Op, query, QueryTypes } from 'sequelize';
 import { startOfMonth, lastDayOfMonth } from 'date-fns';
 import Appointment from '../models/Appointment';
-import Contact from '../models/Contact';
 import Establishment from '../models/Establishment';
 import Roles from '../models/Roles';
 import User from '../models/User';
