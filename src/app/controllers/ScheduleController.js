@@ -1,4 +1,4 @@
-import { Op, query, QueryTypes } from 'sequelize';
+import { Op } from 'sequelize';
 import { startOfMonth, lastDayOfMonth } from 'date-fns';
 import Appointment from '../models/Appointment';
 import Establishment from '../models/Establishment';
