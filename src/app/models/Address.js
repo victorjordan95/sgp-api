@@ -10,6 +10,9 @@ class Address extends Model {
         city: Sequelize.STRING,
         state: Sequelize.STRING,
         country: Sequelize.STRING,
+        neighborhood: Sequelize.STRING,
+        zipcode: Sequelize.INTEGER,
+        location: Sequelize.GEOMETRY('POINT'),
         full_address: {
           type: Sequelize.VIRTUAL,
           get() {

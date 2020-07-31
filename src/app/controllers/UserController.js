@@ -55,6 +55,9 @@ class UserController {
   }
 
   async store(req, res) {
+    const [lat, lng] = req.body.geometry;
+    const point = { type: 'Point', coordinates: [lat, lng] };
+
     const { email, cpf, rg } = req.body;
     const userExists = await User.findOne({
       where: { [Op.or]: [{ email }, { cpf }, { rg }] },
@@ -65,7 +68,7 @@ class UserController {
     }
 
     const contactUser = await Contact.create(req.body);
-    const addressUser = await Address.create(req.body);
+    const addressUser = await Address.create({ ...req.body, location: point });
 
     const { establishments, ...data } = req.body;
     const user = await User.create({
@@ -82,9 +85,19 @@ class UserController {
   }
 
   async update(req, res) {
+    const [lat, lng] = req.body.geometry;
+    const point = { type: 'Point', coordinates: [lat, lng] };
     const { email, oldPassword, avatar_id } = req.body;
     const { cellphone, phone } = req.body;
-    const { street, city, complement, country, number, state } = req.body;
+    const {
+      street,
+      city,
+      complement,
+      country,
+      number,
+      state,
+      zipcode,
+    } = req.body;
 
     let user;
     if (req.params.id) {
@@ -105,9 +118,19 @@ class UserController {
       await userContactUpdate.update(req.body);
     }
 
-    if (street || city || complement || country || number || state) {
+    if (
+      street ||
+      city ||
+      complement ||
+      country ||
+      number ||
+      state ||
+      zipcode ||
+      lat ||
+      lng
+    ) {
       const userAddressUpdate = await Address.findByPk(user.address);
-      await userAddressUpdate.update(req.body);
+      await userAddressUpdate.update({ ...req.body, location: point });
     }
 
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
