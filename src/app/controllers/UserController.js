@@ -30,6 +30,9 @@ class UserController {
             'complement',
             'city',
             'state',
+            'zipcode',
+            'locale',
+            'neighborhood',
             'country',
           ],
         },
@@ -68,7 +71,7 @@ class UserController {
     }
 
     const contactUser = await Contact.create(req.body);
-    const addressUser = await Address.create({ ...req.body, location: point });
+    const addressUser = await Address.create({ ...req.body, locale: point });
 
     const { establishments, ...data } = req.body;
     const user = await User.create({
@@ -85,6 +88,7 @@ class UserController {
   }
 
   async update(req, res) {
+    console.log(req.body);
     const [lat, lng] = req.body.geometry;
     const point = { type: 'Point', coordinates: [lat, lng] };
     const { email, oldPassword, avatar_id } = req.body;
@@ -130,7 +134,7 @@ class UserController {
       lng
     ) {
       const userAddressUpdate = await Address.findByPk(user.address);
-      await userAddressUpdate.update({ ...req.body, location: point });
+      await userAddressUpdate.update({ ...req.body, locale: point });
     }
 
     if (oldPassword && !(await user.checkPassword(oldPassword))) {

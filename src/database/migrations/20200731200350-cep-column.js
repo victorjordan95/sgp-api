@@ -3,7 +3,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn('address', 'zipcode', {
-      type: Sequelize.INTEGER,
+      type: Sequelize.STRING,
       allowNull: true,
     });
   },

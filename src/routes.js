@@ -4,6 +4,7 @@ import multerConfig from './config/multer';
 
 import AppointmentController from './app/controllers/AppointmentController';
 import CidController from './app/controllers/CidController';
+import CityController from './app/controllers/CityController';
 import DoctorController from './app/controllers/DoctorController';
 import EmployeeController from './app/controllers/EmployeeController';
 import EstablishmentController from './app/controllers/EstablishmentController';
@@ -22,6 +23,7 @@ const upload = multer(multerConfig);
 routes.post('/session', SessionController.store);
 routes.post('/sessionToken', SessionController.index);
 routes.post('/users', UserController.store);
+routes.get('/city', CityController.index);
 
 routes.use(authMiddleware);
 

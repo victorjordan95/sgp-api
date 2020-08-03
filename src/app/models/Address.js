@@ -12,7 +12,7 @@ class Address extends Model {
         country: Sequelize.STRING,
         neighborhood: Sequelize.STRING,
         zipcode: Sequelize.INTEGER,
-        location: Sequelize.GEOMETRY('POINT'),
+        locale: Sequelize.GEOMETRY('POINT'),
         full_address: {
           type: Sequelize.VIRTUAL,
           get() {
