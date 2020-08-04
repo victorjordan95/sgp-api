@@ -3,6 +3,7 @@ import Address from '../models/Address';
 import Contact from '../models/Contact';
 import Establishment from '../models/Establishment';
 import MedicineCategory from '../models/MedicineCategory';
+import User from '../models/User';
 
 class EstablishmentController {
   async index(req, res) {
@@ -49,6 +50,35 @@ class EstablishmentController {
     ];
 
     let establishment;
+    if (req.query.userId) {
+      const query = {
+        attributes,
+        include: [
+          {
+            model: Address,
+            as: 'address_pk',
+            attributes: ['street', 'number', 'complement', 'city'],
+          },
+          {
+            model: MedicineCategory,
+            as: 'categories',
+            attributes: ['name', 'id'],
+          },
+          {
+            model: User,
+            as: 'users',
+            attributes: ['id'],
+            where: {
+              id: req.query.userId,
+            },
+          },
+        ],
+        limit: 50,
+      };
+      establishment = await Establishment.findAndCountAll(query);
+      return res.json(establishment);
+    }
+
     if (req.params.id) {
       establishment = await Establishment.findByPk(req.params.id, {
         ...attributes,

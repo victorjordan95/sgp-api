@@ -88,9 +88,13 @@ class UserController {
   }
 
   async update(req, res) {
-    console.log(req.body);
-    const [lat, lng] = req.body.geometry;
-    const point = { type: 'Point', coordinates: [lat, lng] };
+    let lat;
+    let lng;
+    let point;
+    if (req.body.geometry) {
+      [lat, lng] = req.body.geometry;
+      point = { type: 'Point', coordinates: [lat, lng] };
+    }
     const { email, oldPassword, avatar_id } = req.body;
     const { cellphone, phone } = req.body;
     const {
