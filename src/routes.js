@@ -2,6 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import multerConfig from './config/multer';
 
+import AvailableController from './app/controllers/AvailableController';
 import AppointmentController from './app/controllers/AppointmentController';
 import CidController from './app/controllers/CidController';
 import CityController from './app/controllers/CityController';
@@ -34,7 +35,9 @@ routes.put('/files', upload.single('file'), FileController.update);
 
 routes.get('/patients', PatientController.index);
 routes.get('/employees', EmployeeController.index);
+
 routes.get('/doctors', DoctorController.index);
+routes.get('/doctor/:doctorId/available', AvailableController.index);
 
 routes.get('/users/:id', UserController.index);
 routes.get('/users', UserController.index);

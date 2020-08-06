@@ -41,25 +41,7 @@ class AppointmentController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { doctor_id, start, patient_id } = req.body;
-    // const isDoctor = await User.findOne({
-    //   where: { id: doctor_id },
-    //   include: [
-    //     {
-    //       model: Roles,
-    //       attributes: ['role'],
-    //       where: {
-    //         role: RoleEnum.DOCTOR,
-    //       },
-    //     },
-    //   ],
-    // });
-
-    // if (!isDoctor) {
-    //   return res.status(401).json({
-    //     error: `Você só pode agendar consultas para usuários do tipo ${RoleEnum.DOCTOR}`,
-    //   });
-    // }
+    const { patient_id } = req.body;
 
     const isEmployee = await User.findOne({
       where: { id: req.userId },
@@ -76,9 +58,9 @@ class AppointmentController {
 
     let status;
     if (isEmployee) {
-      status = { status: 'AGENDADO' };
+      status = { status: 2 };
     } else {
-      status = { status: 'AGUARDANDO' };
+      status = { status: 1 };
     }
 
     const patientName = await User.findOne({

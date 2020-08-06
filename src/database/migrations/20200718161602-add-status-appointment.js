@@ -2,9 +2,9 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn('appointment', 'status', {
-      type: Sequelize.STRING,
+      type: Sequelize.INTEGER,
       allowNull: false,
-      defaultValue: 'AGUARDANDO',
+      defaultValue: 1,
     });
   },
 

@@ -1,12 +1,15 @@
-import * as Yup from 'yup';
+import { Op } from 'sequelize';
 import Address from '../models/Address';
+import Establishment from '../models/Establishment';
 import Roles from '../models/Roles';
+import MedicineCategory from '../models/MedicineCategory';
 import User from '../models/User';
 import RoleEnum from '../enums/Roles.enum';
+import getRoleValue from '../utils/getRoleValue';
 
 class DoctorController {
   async index(req, res) {
-    const { page = 1 } = req.query;
+    const { page = 1, userEstab } = req.query;
     const AMOUNT_PAGE = 10;
 
     const userAttributes = {
@@ -15,18 +18,31 @@ class DoctorController {
       offset: (page - 1) * AMOUNT_PAGE,
       where: {
         status: true,
+        role: getRoleValue(RoleEnum.DOCTOR),
       },
       include: [
         {
           model: Roles,
-          where: {
-            role: RoleEnum.DOCTOR,
-          },
         },
         {
           model: Address,
           as: 'address_pk',
           attributes: ['city'],
+        },
+        {
+          model: Establishment,
+          attributes: ['name', 'id'],
+          as: 'establishments',
+          include: [
+            {
+              model: MedicineCategory,
+              as: 'categories',
+              attributes: ['name'],
+            },
+          ],
+          where: {
+            id: userEstab.split(',').map(el => Number(el)),
+          },
         },
       ],
     };

@@ -58,8 +58,13 @@ class UserController {
   }
 
   async store(req, res) {
-    const [lat, lng] = req.body.geometry;
-    const point = { type: 'Point', coordinates: [lat, lng] };
+    let lat;
+    let lng;
+    let point;
+    if (req.body.geometry) {
+      [lat, lng] = req.body.geometry;
+      point = { type: 'Point', coordinates: [lat, lng] };
+    }
 
     const { email, cpf, rg } = req.body;
     const userExists = await User.findOne({

@@ -1,6 +1,7 @@
 import { Op } from 'sequelize';
 import { startOfMonth, lastDayOfMonth } from 'date-fns';
 import Appointment from '../models/Appointment';
+import Contact from '../models/Contact';
 import Establishment from '../models/Establishment';
 import Roles from '../models/Roles';
 import User from '../models/User';
@@ -33,7 +34,7 @@ class ScheduleController {
       where: {
         doctor_id: req.userId,
         canceled_at: null,
-        status: 'AGENDADO',
+        status: 2,
         start: {
           [Op.between]: [
             startOfMonth(formattedDate),
@@ -115,11 +116,17 @@ class ScheduleController {
           model: User,
           as: 'patient',
           attributes: ['name'],
+          include: [
+            {
+              model: Contact,
+              attributes: ['phone', 'cellphone'],
+            },
+          ],
         },
       ],
       where: {
         canceled_at: null,
-        status: 'AGUARDANDO',
+        status: 1,
       },
       order: ['start'],
       limit: AMOUNT_PAGE,
@@ -131,7 +138,7 @@ class ScheduleController {
         ...userAttributes,
         where: {
           title: { [Op.iLike]: `%${name}%` },
-          status: { [Op.iLike]: '%AGUARDANDO%' },
+          status: 1,
         },
       };
     }
@@ -161,7 +168,7 @@ class ScheduleController {
     }
 
     const appointment = await Appointment.findByPk(req.body.id);
-    appointment.update({ status: 'AGENDADO' });
+    appointment.update({ status: 2 });
 
     return res.json(appointment);
   }
@@ -215,7 +222,7 @@ class ScheduleController {
       ],
       where: {
         canceled_at: null,
-        status: 'AGUARDANDO',
+        status: 1,
       },
       order: ['start'],
       limit: AMOUNT_PAGE,
