@@ -17,7 +17,7 @@ class AppointmentController {
         start: { [Op.between]: [startOfMonth(start), lastDayOfMonth(start)] },
       },
       order: ['start'],
-      attributes: ['id', 'start', 'doctor_id'],
+      attributes: ['id', 'start', 'doctor_id', 'status'],
       include: [
         {
           model: User,

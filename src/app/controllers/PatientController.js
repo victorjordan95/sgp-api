@@ -9,10 +9,8 @@ class PatientController {
     const { page = 1 } = req.query;
     const AMOUNT_PAGE = 10;
 
-    const userAttributes = {
+    let userAttributes = {
       attributes: ['id', 'name', 'email', 'cpf', 'rg'],
-      limit: AMOUNT_PAGE,
-      offset: (page - 1) * AMOUNT_PAGE,
       where: {
         status: true,
       },
@@ -30,6 +28,14 @@ class PatientController {
         },
       ],
     };
+
+    if (page) {
+      userAttributes = {
+        ...userAttributes,
+        limit: AMOUNT_PAGE,
+        offset: (page - 1) * AMOUNT_PAGE,
+      };
+    }
 
     let users;
     if (req.params.id) {

@@ -9,13 +9,11 @@ import getRoleValue from '../utils/getRoleValue';
 
 class DoctorController {
   async index(req, res) {
-    const { page = 1, userEstab } = req.query;
+    const { page, userEstab } = req.query;
     const AMOUNT_PAGE = 10;
 
-    const userAttributes = {
+    let userAttributes = {
       attributes: ['id', 'name', 'email', 'cpf', 'rg'],
-      limit: AMOUNT_PAGE,
-      offset: (page - 1) * AMOUNT_PAGE,
       where: {
         status: true,
         role: getRoleValue(RoleEnum.DOCTOR),
@@ -46,6 +44,14 @@ class DoctorController {
         },
       ],
     };
+
+    if (page) {
+      userAttributes = {
+        ...userAttributes,
+        limit: AMOUNT_PAGE,
+        offset: (page - 1) * AMOUNT_PAGE,
+      };
+    }
 
     let users;
     if (req.params.id) {

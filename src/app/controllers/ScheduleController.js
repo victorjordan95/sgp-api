@@ -9,6 +9,7 @@ import RoleEnum from '../enums/Roles.enum';
 
 class ScheduleController {
   async index(req, res) {
+    const { doctorId } = req.query;
     const isDoctor = await User.findOne({
       where: { id: req.userId },
       include: [
@@ -32,7 +33,7 @@ class ScheduleController {
     const formattedDate = new Date(date || '');
     const appointments = await Appointment.findAll({
       where: {
-        doctor_id: req.userId,
+        doctor_id: Number(doctorId) || req.userId,
         canceled_at: null,
         status: 2,
         start: {
@@ -42,7 +43,15 @@ class ScheduleController {
           ],
         },
       },
-      attributes: ['id', 'title', 'start', 'end', 'all_day', 'patient_id'],
+      attributes: [
+        'id',
+        'title',
+        'start',
+        'end',
+        'all_day',
+        'patient_id',
+        'status',
+      ],
       order: ['start'],
     });
 
