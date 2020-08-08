@@ -35,7 +35,7 @@ class ScheduleController {
       where: {
         doctor_id: Number(doctorId) || req.userId,
         canceled_at: null,
-        status: 2,
+        [Op.or]: [{ status: 2 }, { status: 5 }, { status: 3 }],
         start: {
           [Op.between]: [
             startOfMonth(formattedDate),
@@ -177,9 +177,11 @@ class ScheduleController {
     }
 
     const appointment = await Appointment.findByPk(req.body.id);
-    appointment.update({ status: 2 });
+    const updatedAppointment = await appointment.update({
+      status: Number(req.body.status),
+    });
 
-    return res.json(appointment);
+    return res.json(updatedAppointment);
   }
 
   async countRequests(req, res) {

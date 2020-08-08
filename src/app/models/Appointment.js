@@ -9,6 +9,7 @@ class Appointment extends Model {
         end: Sequelize.DATE,
         all_day: Sequelize.BOOLEAN,
         canceled_at: Sequelize.DATE,
+        status: Sequelize.INTEGER,
       },
       {
         sequelize,
