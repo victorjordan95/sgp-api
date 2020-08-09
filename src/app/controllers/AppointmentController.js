@@ -1,6 +1,12 @@
 import * as Yup from 'yup';
 import { Op } from 'sequelize';
-import { startOfMonth, lastDayOfMonth } from 'date-fns';
+import {
+  startOfMonth,
+  lastDayOfMonth,
+  startOfDay,
+  endOfDay,
+  format,
+} from 'date-fns';
 import Appointment from '../models/Appointment';
 import Roles from '../models/Roles';
 import User from '../models/User';
@@ -15,6 +21,64 @@ class AppointmentController {
         patient_id: req.userId,
         canceled_at: null,
         start: { [Op.between]: [startOfMonth(start), lastDayOfMonth(start)] },
+      },
+      order: ['start'],
+      attributes: [
+        'id',
+        'title',
+        'start',
+        'end',
+        'all_day',
+        'patient_id',
+        'status',
+      ],
+      include: [
+        {
+          model: User,
+          as: 'doctor',
+          attributes: ['name'],
+        },
+      ],
+    });
+    return res.json(appointments);
+  }
+
+  async indexToday(req, res) {
+    const { start = new Date() } = req.query;
+    const appointments = await Appointment.findOne({
+      where: {
+        patient_id: req.userId,
+        canceled_at: null,
+        start: { [Op.between]: [startOfDay(start), endOfDay(start)] },
+      },
+      order: ['start'],
+      attributes: [
+        'id',
+        'title',
+        'start',
+        'end',
+        'all_day',
+        'patient_id',
+        'status',
+      ],
+      include: [
+        {
+          model: User,
+          as: 'doctor',
+          attributes: ['name'],
+        },
+      ],
+    });
+    return res.json(appointments);
+  }
+
+  async queueAppointment(req, res) {
+    const { start = new Date() } = req.query;
+    const appointments = await Appointment.findAll({
+      where: {
+        canceled_at: null,
+        start: { [Op.between]: [startOfDay(start), endOfDay(start)] },
+        status: 2,
       },
       order: ['start'],
       attributes: [

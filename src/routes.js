@@ -46,6 +46,8 @@ routes.put('/users/:id', UserController.update);
 routes.delete('/users/:id', UserController.delete);
 
 routes.get('/appointments', AppointmentController.index);
+routes.get('/my-appointments-today', AppointmentController.indexToday);
+routes.get('/my-position', AppointmentController.queueAppointment);
 routes.post('/appointments', AppointmentController.store);
 
 routes.get('/schedule', ScheduleController.index);
