@@ -5,9 +5,11 @@ import Appointment from '../app/models/Appointment';
 import Cid from '../app/models/Cid';
 import City from '../app/models/City';
 import Contact from '../app/models/Contact';
+import Doctor from '../app/models/Doctor';
 import Establishment from '../app/models/Establishment';
 import File from '../app/models/File';
 import MedicineCategory from '../app/models/MedicineCategory';
+import ProfessionalCoucil from '../app/models/ProfessionalCoucil';
 import Roles from '../app/models/Roles';
 import Session from '../app/models/Session';
 import State from '../app/models/State';
@@ -21,9 +23,11 @@ const models = [
   Cid,
   City,
   Contact,
+  Doctor,
   Establishment,
   File,
   MedicineCategory,
+  ProfessionalCoucil,
   Roles,
   Session,
   State,

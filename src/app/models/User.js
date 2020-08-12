@@ -39,6 +39,7 @@ class User extends Model {
     });
 
     this.belongsTo(models.File, { foreignKey: 'avatar_id', as: 'avatar' });
+    this.belongsTo(models.Doctor, { foreignKey: 'doctor', as: 'doctor_info' });
 
     this.belongsTo(models.Roles, { foreignKey: 'role' });
     this.belongsTo(models.Contact, { foreignKey: 'contact' });

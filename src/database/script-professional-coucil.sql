@@ -1,0 +1,14 @@
+INSERT INTO professional_coucil(name, created_at, updated_at) VALUES ('CREA', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
+INSERT INTO professional_coucil(name, created_at, updated_at) VALUES ('CAU', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
+INSERT INTO professional_coucil(name, created_at, updated_at) VALUES ('CRBIO', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
+INSERT INTO professional_coucil(name, created_at, updated_at) VALUES ('CRMV', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
+INSERT INTO professional_coucil(name, created_at, updated_at) VALUES ('CRM', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
+INSERT INTO professional_coucil(name, created_at, updated_at) VALUES ('CRP', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
+INSERT INTO professional_coucil(name, created_at, updated_at) VALUES ('CRF', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
+INSERT INTO professional_coucil(name, created_at, updated_at) VALUES ('CRO', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
+INSERT INTO professional_coucil(name, created_at, updated_at) VALUES ('Crefito', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
+INSERT INTO professional_coucil(name, created_at, updated_at) VALUES ('Crefono', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
+INSERT INTO professional_coucil(name, created_at, updated_at) VALUES ('CRQ', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
+INSERT INTO professional_coucil(name, created_at, updated_at) VALUES ('CRN', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
+INSERT INTO professional_coucil(name, created_at, updated_at) VALUES ('CREF', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');
+INSERT INTO professional_coucil(name, created_at, updated_at) VALUES ('COREN', '2020-07-01 18:01:13.603+00', '2020-07-01 18:01:13.603+00');

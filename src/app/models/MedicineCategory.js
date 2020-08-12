@@ -21,6 +21,12 @@ class MedicineCategory extends Model {
       as: 'establishments',
       foreignKey: 'medicine_id',
     });
+
+    this.belongsToMany(models.Doctor, {
+      through: 'doctor_medicine_category',
+      as: 'doctors',
+      foreignKey: 'medicine_id',
+    });
   }
 }
 

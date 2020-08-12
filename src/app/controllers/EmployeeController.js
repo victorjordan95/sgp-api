@@ -20,9 +20,13 @@ class EmployeeController {
         },
       ],
     });
-    const employeeEstabId = employee.establishments[0].user_establishment.get(
-      'establishment_id'
-    );
+    const employeeEstabId =
+      employee?.establishments[0]?.user_establishment.get('establishment_id') ||
+      null;
+
+    if (!employeeEstabId) {
+      return res.json([]);
+    }
 
     const userAttributes = {
       attributes: ['id', 'name', 'email', 'cpf', 'rg'],

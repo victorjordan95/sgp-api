@@ -1,6 +1,7 @@
 import { Op } from 'sequelize';
 import Address from '../models/Address';
 import Contact from '../models/Contact';
+import Doctor from '../models/Doctor';
 import Establishment from '../models/Establishment';
 import File from '../models/File';
 import Roles from '../models/Roles';
@@ -111,6 +112,14 @@ class UserController {
       state,
       zipcode,
     } = req.body;
+    const {
+      appointment_time,
+      categories,
+      coucil_number,
+      endHour,
+      professional_coucil,
+      start_hour,
+    } = req.body;
 
     let user;
     if (req.params.id) {
@@ -150,8 +159,28 @@ class UserController {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
+    let updatedDoc;
+    if (
+      appointment_time ||
+      categories ||
+      coucil_number ||
+      endHour ||
+      professional_coucil ||
+      start_hour
+    ) {
+      const doctorInfo = await Doctor.findByPk(user.doctor);
+      if (doctorInfo) {
+        updatedDoc = await doctorInfo.update(req.body);
+      } else {
+        updatedDoc = await Doctor.create(req.body);
+      }
+      if (categories) {
+        updatedDoc.setCategories(categories);
+      }
+    }
+
     const { establishments, ...data } = req.body;
-    const createdUser = await user.update(data);
+    const createdUser = await user.update({ data, doctor: updatedDoc.id });
 
     if (establishments) {
       createdUser.setEstablishments(establishments);

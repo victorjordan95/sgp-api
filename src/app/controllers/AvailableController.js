@@ -8,8 +8,13 @@ import {
   setSeconds,
   format,
   isAfter,
+  addMinutes,
+  addHours,
+  getMinutes,
+  getHours,
 } from 'date-fns';
 import Appointment from '../models/Appointment';
+import Doctor from '../models/Doctor';
 import User from '../models/User';
 
 class AvailableController {
@@ -21,6 +26,16 @@ class AvailableController {
     }
 
     const searchDate = Number(date);
+
+    const doctor = await User.findByPk(req.params.doctorId, {
+      include: [
+        {
+          model: Doctor,
+          as: 'doctor_info',
+          attributes: ['start_hour', 'end_hour', 'time_appointment'],
+        },
+      ],
+    });
 
     const appointments = await Appointment.findAll({
       where: {
@@ -34,37 +49,55 @@ class AvailableController {
         {
           model: User,
           as: 'doctor',
-          attributes: ['name'],
+          attributes: ['name', 'doctor'],
         },
       ],
     });
 
-    const schedule = [
-      '08:00',
-      '08:30',
-      '09:00',
-      '09:30',
-      '10:00',
-      '10:30',
-      '11:00',
-      '11:30',
-      '12:00',
-      '12:30',
-      '13:00',
-      '13:30',
-      '14:00',
-      '14:30',
-      '15:00',
-      '15:30',
-      '16:00',
-      '16:30',
-      '17:00',
-      '17:30',
-      '18:00',
-      '18:30',
-      '19:00',
-      '19:30',
-    ];
+    const startAp = doctor.dataValues.doctor_info.dataValues.start_hour;
+    const endAp = doctor.dataValues.doctor_info.dataValues.end_hour;
+    const intervalAp =
+      doctor.dataValues.doctor_info.dataValues.time_appointment;
+
+    const valueStart = setSeconds(
+      setMinutes(
+        setHours(new Date(), startAp.split(':')[0]),
+        startAp.split(':')[1]
+      ),
+      0
+    );
+
+    const valueEnd = setSeconds(
+      setMinutes(
+        setHours(new Date(), endAp.split(':')[0]),
+        endAp.split(':')[1]
+      ),
+      0
+    );
+
+    const [hourInter, minuteInter] = intervalAp.split(':');
+
+    let schedule = [];
+    let startDateList = valueStart;
+
+    while (startDateList < valueEnd) {
+      startDateList = addHours(
+        addMinutes(startDateList, minuteInter),
+        hourInter
+      );
+      schedule = [
+        ...schedule,
+        `${
+          getHours(startDateList) < 10
+            ? `0${getHours(startDateList)}`
+            : getHours(startDateList)
+        }:${
+          getMinutes(startDateList) < 10
+            ? `0${getMinutes(startDateList)}`
+            : getMinutes(startDateList)
+        }`,
+      ];
+    }
 
     const available = schedule.map(time => {
       const [hour, minute] = time.split(':');
