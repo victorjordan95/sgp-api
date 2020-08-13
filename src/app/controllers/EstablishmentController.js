@@ -4,6 +4,7 @@ import Contact from '../models/Contact';
 import Establishment from '../models/Establishment';
 import MedicineCategory from '../models/MedicineCategory';
 import User from '../models/User';
+import RoleEnum from '../enums/Roles.enum';
 
 class EstablishmentController {
   async index(req, res) {
@@ -22,15 +23,6 @@ class EstablishmentController {
       {
         model: Address,
         as: 'address_pk',
-        attributes: [
-          'full_address',
-          'street',
-          'number',
-          'complement',
-          'city',
-          'state',
-          'country',
-        ],
       },
       {
         model: Contact,
@@ -57,7 +49,6 @@ class EstablishmentController {
           {
             model: Address,
             as: 'address_pk',
-            attributes: ['street', 'number', 'complement', 'city'],
           },
           {
             model: MedicineCategory,
@@ -74,6 +65,9 @@ class EstablishmentController {
           },
         ],
         limit: 50,
+        where: {
+          status: true,
+        },
       };
       establishment = await Establishment.findAndCountAll(query);
       return res.json(establishment);
@@ -83,6 +77,23 @@ class EstablishmentController {
       establishment = await Establishment.findByPk(req.params.id, {
         ...attributes,
         ...establishmentAttributes,
+        include: [
+          {
+            model: Address,
+            as: 'address_pk',
+          },
+          {
+            model: Contact,
+            attributes: ['phone', 'cellphone'],
+          },
+          {
+            model: MedicineCategory,
+            as: 'categories',
+          },
+        ],
+        where: {
+          status: true,
+        },
       });
     } else {
       const lat = parseFloat(req.query.lat);
@@ -177,12 +188,13 @@ class EstablishmentController {
   }
 
   async delete(req, res) {
-    const { id, role } = req.body;
-    if (role !== 1 && id !== parseInt(req.params.id, 10)) {
+    const user = await User.findByPk(req.userId);
+
+    if (user.role !== 1) {
       return res.status(403).json({ error: 'Não permitido.' });
     }
     const estab = await Establishment.findByPk(req.params.id);
-    await estab.destroy({ status: false });
+    await estab.update({ status: false });
     return res.status(201).json({
       message: `Estabelecimento ${estab.name} removido com sucesso`,
     });

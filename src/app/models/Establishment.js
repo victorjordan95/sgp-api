@@ -11,6 +11,7 @@ class Establishment extends Model {
         is_pharmacy: Sequelize.BOOLEAN,
         is_public: Sequelize.BOOLEAN,
         location: Sequelize.GEOMETRY('POINT'),
+        status: Sequelize.BOOLEAN,
       },
       {
         sequelize,

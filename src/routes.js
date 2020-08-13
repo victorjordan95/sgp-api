@@ -60,7 +60,9 @@ routes.post('/roles', RoleController.store);
 // ROTAS PARA ADMIN
 // CRIAR UM MIDDLE
 routes.get('/establishment', EstablishmentController.index);
+routes.get('/establishment/:id', EstablishmentController.index);
 routes.post('/establishment', EstablishmentController.store);
 routes.put('/establishment', EstablishmentController.update);
+routes.delete('/establishment/:id', EstablishmentController.delete);
 
 export default routes;

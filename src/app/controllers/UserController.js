@@ -14,7 +14,7 @@ class UserController {
       include: [
         {
           model: Roles,
-          attributes: ['role'],
+          attributes: ['role', 'id'],
         },
         {
           model: Establishment,
@@ -180,7 +180,10 @@ class UserController {
     }
 
     const { establishments, ...data } = req.body;
-    const createdUser = await user.update({ data, doctor: updatedDoc.id });
+    const createdUser = await user.update({
+      data,
+      doctor: (updatedDoc && updatedDoc.id) || null,
+    });
 
     if (establishments) {
       createdUser.setEstablishments(establishments);

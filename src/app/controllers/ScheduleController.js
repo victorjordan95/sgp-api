@@ -17,7 +17,11 @@ class ScheduleController {
           model: Roles,
           attributes: ['role'],
           where: {
-            [Op.or]: [{ role: RoleEnum.DOCTOR }, { role: RoleEnum.EMPLOYEE }],
+            [Op.or]: [
+              { role: RoleEnum.DOCTOR },
+              { role: RoleEnum.EMPLOYEE },
+              { role: RoleEnum.ADMIN },
+            ],
           },
         },
       ],
@@ -85,9 +89,13 @@ class ScheduleController {
       ],
     });
 
-    const employeeEstabId = employee.establishments[0].user_establishment.get(
-      'establishment_id'
-    );
+    const employeeEstabId =
+      employee.establishments[0] &&
+      employee.establishments[0].user_establishment.get('establishment_id');
+
+    if (!employeeEstabId) {
+      return res.json([]);
+    }
 
     if (!employee) {
       return res.status(401).json({
@@ -193,7 +201,11 @@ class ScheduleController {
           model: Roles,
           attributes: ['role'],
           where: {
-            [Op.or]: [{ role: RoleEnum.DOCTOR }, { role: RoleEnum.EMPLOYEE }],
+            [Op.or]: [
+              { role: RoleEnum.DOCTOR },
+              { role: RoleEnum.EMPLOYEE },
+              { role: RoleEnum.ADMIN },
+            ],
           },
         },
         {
@@ -204,9 +216,13 @@ class ScheduleController {
       ],
     });
 
-    const employeeEstabId = employee.establishments[0].user_establishment.get(
-      'establishment_id'
-    );
+    const employeeEstabId =
+      employee.establishments[0] &&
+      employee.establishments[0].user_establishment.get('establishment_id');
+
+    if (!employeeEstabId) {
+      return res.json([]);
+    }
 
     if (!employee) {
       return res.status(401).json({

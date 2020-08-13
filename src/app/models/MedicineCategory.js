@@ -5,6 +5,18 @@ class MedicineCategory extends Model {
     super.init(
       {
         name: Sequelize.STRING,
+        label: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return this.name;
+          },
+        },
+        value: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return this.id;
+          },
+        },
       },
       {
         sequelize,
