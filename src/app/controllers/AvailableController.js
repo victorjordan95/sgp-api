@@ -81,10 +81,6 @@ class AvailableController {
     let startDateList = valueStart;
 
     while (startDateList < valueEnd) {
-      startDateList = addHours(
-        addMinutes(startDateList, minuteInter),
-        hourInter
-      );
       schedule = [
         ...schedule,
         `${
@@ -97,6 +93,10 @@ class AvailableController {
             : getMinutes(startDateList)
         }`,
       ];
+      startDateList = addHours(
+        addMinutes(startDateList, minuteInter),
+        hourInter
+      );
     }
 
     const available = schedule.map(time => {
@@ -114,7 +114,10 @@ class AvailableController {
             : 'Não disponível',
         time,
         start: format(value, "yyyy-MM-dd'T'HH:mm:ssxxx"),
-        end: format(setMinutes(value, 30), "yyyy-MM-dd'T'HH:mm:ssxxx"),
+        end: format(
+          addMinutes(addHours(value, hourInter), minuteInter),
+          "yyyy-MM-dd'T'HH:mm:ssxxx"
+        ),
         available:
           isAfter(value, new Date()) &&
           !appointments.find(a => format(a.start, 'HH:mm') === time),
