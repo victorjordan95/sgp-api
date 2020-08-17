@@ -9,6 +9,7 @@ import Doctor from '../app/models/Doctor';
 import Establishment from '../app/models/Establishment';
 import File from '../app/models/File';
 import MedicineCategory from '../app/models/MedicineCategory';
+import Payment from '../app/models/Payment';
 import ProfessionalCoucil from '../app/models/ProfessionalCoucil';
 import Roles from '../app/models/Roles';
 import Session from '../app/models/Session';
@@ -27,6 +28,7 @@ const models = [
   Establishment,
   File,
   MedicineCategory,
+  Payment,
   ProfessionalCoucil,
   Roles,
   Session,

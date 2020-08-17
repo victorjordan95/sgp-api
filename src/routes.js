@@ -11,6 +11,7 @@ import EmployeeController from './app/controllers/EmployeeController';
 import EstablishmentController from './app/controllers/EstablishmentController';
 import FileController from './app/controllers/FileController';
 import PatientController from './app/controllers/PatientController';
+import PaymentController from './app/controllers/PaymentController';
 import RoleController from './app/controllers/RoleController';
 import ScheduleController from './app/controllers/ScheduleController';
 import SessionController from './app/controllers/SessionController';
@@ -51,9 +52,9 @@ routes.get('/my-position', AppointmentController.queueAppointment);
 routes.post('/appointments', AppointmentController.store);
 
 routes.get('/schedule', ScheduleController.index);
+routes.put('/schedule', ScheduleController.approveRequest);
 routes.get('/notification-requests', ScheduleController.countRequests);
 routes.get('/schedule-requests', ScheduleController.indexRequests);
-routes.put('/schedule-requests', ScheduleController.approveRequest);
 
 routes.post('/roles', RoleController.store);
 
@@ -64,5 +65,7 @@ routes.get('/establishment/:id', EstablishmentController.index);
 routes.post('/establishment', EstablishmentController.store);
 routes.put('/establishment', EstablishmentController.update);
 routes.delete('/establishment/:id', EstablishmentController.delete);
+
+routes.post('/payment', PaymentController.store);
 
 export default routes;
