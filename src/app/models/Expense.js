@@ -1,16 +1,15 @@
 import Sequelize, { Model } from 'sequelize';
 
-class Payment extends Model {
+class Expense extends Model {
   static init(sequelize) {
     super.init(
       {
-        appointment_id: Sequelize.INTEGER,
+        name: Sequelize.STRING,
         value: Sequelize.DECIMAL,
-        status: Sequelize.INTEGER,
       },
       {
         sequelize,
-        tableName: 'payment',
+        tableName: 'expense',
       }
     );
 
@@ -18,8 +17,10 @@ class Payment extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Appointment, { foreignKey: 'appointment_id' });
+    this.belongsTo(models.Establishment, {
+      foreignKey: 'establishment_id',
+    });
   }
 }
 
-export default Payment;
+export default Expense;

@@ -12,6 +12,18 @@ class Establishment extends Model {
         is_public: Sequelize.BOOLEAN,
         location: Sequelize.GEOMETRY('POINT'),
         status: Sequelize.BOOLEAN,
+        label: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return this.name;
+          },
+        },
+        value: {
+          type: Sequelize.VIRTUAL,
+          get() {
+            return this.id;
+          },
+        },
       },
       {
         sequelize,

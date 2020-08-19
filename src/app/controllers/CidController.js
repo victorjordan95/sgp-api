@@ -7,15 +7,15 @@ class CidController {
     const { type, name } = req.query;
     const AMOUNT_PAGE = 50;
 
-    let userAttributes = {
+    let cidAttributes = {
       attributes: ['id', 'code', 'name'],
       limit: AMOUNT_PAGE,
       offset: (page - 1) * AMOUNT_PAGE,
     };
 
     if (name) {
-      userAttributes = {
-        ...userAttributes,
+      cidAttributes = {
+        ...cidAttributes,
         where: Sequelize.where(
           Sequelize.fn('unaccent', Sequelize.col(`${type}`)),
           {
@@ -25,7 +25,7 @@ class CidController {
       };
     }
 
-    const cid = await Cid.findAndCountAll(userAttributes);
+    const cid = await Cid.findAndCountAll(cidAttributes);
 
     const hasNextPage = AMOUNT_PAGE * page < cid.count;
     const hasPreviousPage = page > 1;

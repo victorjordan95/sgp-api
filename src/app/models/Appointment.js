@@ -23,6 +23,10 @@ class Appointment extends Model {
   static associate(models) {
     this.belongsTo(models.User, { foreignKey: 'patient_id', as: 'patient' });
     this.belongsTo(models.User, { foreignKey: 'doctor_id', as: 'doctor' });
+    this.belongsTo(models.Establishment, {
+      foreignKey: 'establishment_id',
+      as: 'establishment',
+    });
   }
 }
 

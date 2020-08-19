@@ -7,6 +7,7 @@ import City from '../app/models/City';
 import Contact from '../app/models/Contact';
 import Doctor from '../app/models/Doctor';
 import Establishment from '../app/models/Establishment';
+import Expense from '../app/models/Expense';
 import File from '../app/models/File';
 import MedicineCategory from '../app/models/MedicineCategory';
 import Payment from '../app/models/Payment';
@@ -26,6 +27,7 @@ const models = [
   Contact,
   Doctor,
   Establishment,
+  Expense,
   File,
   MedicineCategory,
   Payment,

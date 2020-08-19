@@ -18,7 +18,7 @@ class UserController {
         },
         {
           model: Establishment,
-          attributes: ['name', 'id'],
+          attributes: ['name', 'value', 'label', 'id'],
           as: 'establishments',
         },
         {
@@ -113,7 +113,7 @@ class UserController {
       zipcode,
     } = req.body;
     const {
-      appointment_time,
+      time_appointment,
       categories,
       coucil_number,
       endHour,
@@ -161,7 +161,7 @@ class UserController {
 
     let updatedDoc;
     if (
-      appointment_time ||
+      time_appointment ||
       categories ||
       coucil_number ||
       endHour ||
@@ -181,7 +181,7 @@ class UserController {
 
     const { establishments, ...data } = req.body;
     const createdUser = await user.update({
-      data,
+      ...data,
       doctor: (updatedDoc && updatedDoc.id) || null,
     });
 
@@ -189,9 +189,7 @@ class UserController {
       createdUser.setEstablishments(establishments);
     }
 
-    return res.json({
-      createdUser,
-    });
+    return res.json(createdUser);
   }
 
   async delete(req, res) {

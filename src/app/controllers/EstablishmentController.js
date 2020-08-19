@@ -1,10 +1,9 @@
-import { literal, fn, where, Op, Sequelize } from 'sequelize';
+import { literal, fn, Op, Sequelize } from 'sequelize';
 import Address from '../models/Address';
 import Contact from '../models/Contact';
 import Establishment from '../models/Establishment';
 import MedicineCategory from '../models/MedicineCategory';
 import User from '../models/User';
-import RoleEnum from '../enums/Roles.enum';
 
 class EstablishmentController {
   async index(req, res) {
@@ -188,11 +187,6 @@ class EstablishmentController {
   }
 
   async delete(req, res) {
-    const user = await User.findByPk(req.userId);
-
-    if (user.role !== 1) {
-      return res.status(403).json({ error: 'Não permitido.' });
-    }
     const estab = await Establishment.findByPk(req.params.id);
     await estab.update({ status: false });
     return res.status(201).json({
