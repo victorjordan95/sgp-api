@@ -6,6 +6,7 @@ import AvailableController from './app/controllers/AvailableController';
 import AppointmentController from './app/controllers/AppointmentController';
 import CidController from './app/controllers/CidController';
 import CityController from './app/controllers/CityController';
+import DashboardController from './app/controllers/DashboardController';
 import DoctorController from './app/controllers/DoctorController';
 import EmployeeController from './app/controllers/EmployeeController';
 import ExpenseController from './app/controllers/ExpenseController';
@@ -63,6 +64,8 @@ routes.post('/roles', RoleController.store);
 routes.post('/expense', ExpenseController.store);
 routes.put('/expense', ExpenseController.update);
 routes.get('/expense', ExpenseController.index);
+
+routes.get('/dashboard', DashboardController.index);
 
 routes.use(isAdmin);
 
