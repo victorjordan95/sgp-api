@@ -65,7 +65,12 @@ routes.post('/expense', ExpenseController.store);
 routes.put('/expense', ExpenseController.update);
 routes.get('/expense', ExpenseController.index);
 
-routes.get('/dashboard', DashboardController.index);
+routes.get('/dashboard-year', DashboardController.indexYear);
+routes.get('/dashboard-appointments-day', DashboardController.appointmentsDay);
+routes.get(
+  '/dashboard-appointments-month',
+  DashboardController.appointmentsMonth
+);
 
 routes.use(isAdmin);
 

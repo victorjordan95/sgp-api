@@ -21,7 +21,7 @@ class PaymentController {
 
   async index(req, res) {
     const { page = 1 } = req.query;
-    const { type, name } = req.query;
+    const { type, name, estab } = req.query;
     const AMOUNT_PAGE = 50;
 
     let paymentAttributes = {
@@ -36,7 +36,7 @@ class PaymentController {
               model: Establishment,
               as: 'establishment',
               where: {
-                id: 11,
+                id: estab,
               },
             },
           ],

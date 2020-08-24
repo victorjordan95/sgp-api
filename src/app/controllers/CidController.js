@@ -16,12 +16,9 @@ class CidController {
     if (name) {
       cidAttributes = {
         ...cidAttributes,
-        where: Sequelize.where(
-          Sequelize.fn('unaccent', Sequelize.col(`${type}`)),
-          {
-            [Op.iLike]: `%${name}%`,
-          }
-        ),
+        where: Sequelize.where(Sequelize.fn('unaccent', Sequelize.col(type)), {
+          [Op.iLike]: `%${name}%`,
+        }),
       };
     }
 
