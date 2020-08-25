@@ -68,7 +68,7 @@ class EmployeeController {
         inner join user_establishment
         on us.id = user_establishment.user_id
         inner join establishment e
-        on e.id = user_establishment.id
+        on e.id = user_establishment.establishment_id
         inner join role r
         on us.role = r.id
         where user_establishment.establishment_id
