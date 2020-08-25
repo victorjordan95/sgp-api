@@ -76,6 +76,7 @@ class EmployeeController {
         in (${userEstabs.rows.map(el => el.id)});`
       );
     }
+    client.end();
 
     const hasNextPage = AMOUNT_PAGE * page < users.count;
     const hasPreviousPage = page > 1;

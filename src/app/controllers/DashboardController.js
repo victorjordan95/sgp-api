@@ -22,6 +22,7 @@ class DashboardController {
       order by name asc
       limit 12`
     );
+    client.end();
 
     const data = rows.map(el => {
       return {
@@ -36,7 +37,6 @@ class DashboardController {
     const { estab } = req.query;
 
     client.connect();
-
     const done = await client.query(
       `select count(ap.id), establishment_id
       from appointment ap
@@ -71,11 +71,13 @@ class DashboardController {
         value: Number(el.count),
       };
     });
+    client.end();
     return res.json([...dataDone, ...dataCancelled]);
   }
 
   async appointmentsMonth(req, res) {
     const { estab } = req.query;
+    client.connect();
 
     const done = await client.query(
       `select count(ap.id), establishment_id
@@ -111,6 +113,7 @@ class DashboardController {
         value: Number(el.count),
       };
     });
+    client.end();
     return res.json([...dataDone, ...dataCancelled]);
   }
 }
