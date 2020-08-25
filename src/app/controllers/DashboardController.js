@@ -10,7 +10,6 @@ import client from '../../database/db';
 
 class DashboardController {
   async indexYear(req, res) {
-    client.connect();
     const { estab } = req.query;
 
     const { rows } = await client.query(
@@ -22,7 +21,6 @@ class DashboardController {
       order by name asc
       limit 12`
     );
-    client.end();
 
     const data = rows.map(el => {
       return {
@@ -71,13 +69,11 @@ class DashboardController {
         value: Number(el.count),
       };
     });
-    client.end();
     return res.json([...dataDone, ...dataCancelled]);
   }
 
   async appointmentsMonth(req, res) {
     const { estab } = req.query;
-    client.connect();
 
     const done = await client.query(
       `select count(ap.id), establishment_id
@@ -113,7 +109,6 @@ class DashboardController {
         value: Number(el.count),
       };
     });
-    client.end();
     return res.json([...dataDone, ...dataCancelled]);
   }
 }

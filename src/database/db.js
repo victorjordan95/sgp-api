@@ -9,4 +9,6 @@ const client = new Client({
   port: 5432,
 });
 
+client.connect();
+
 export default client;
