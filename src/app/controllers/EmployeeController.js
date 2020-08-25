@@ -5,26 +5,25 @@ import User from '../models/User';
 import Roles from '../models/Roles';
 import RoleEnum from '../enums/Roles.enum';
 
+import client from '../../database/db';
+
 class EmployeeController {
   async index(req, res) {
     const { page = 1 } = req.query;
     const AMOUNT_PAGE = 10;
 
-    const employee = await User.findOne({
-      where: { id: req.userId },
-      include: [
-        {
-          model: Establishment,
-          attributes: ['id'],
-          as: 'establishments',
-        },
-      ],
-    });
-    const employeeEstabId =
-      employee?.establishments[0]?.user_establishment.get('establishment_id') ||
-      null;
+    client.connect();
+    console.log(req.userId);
+    const userEstabs = await client.query(
+      `select estab.id from "establishment" as estab
+      join user_establishment as uestab
+      on estab.id = uestab.establishment_id
+      where uestab.user_id = ${req.userId}`
+    );
 
-    if (!employeeEstabId) {
+    console.log(userEstabs.rows);
+
+    if (!userEstabs) {
       return res.json([]);
     }
 
@@ -45,9 +44,6 @@ class EmployeeController {
           model: Establishment,
           as: 'establishments',
           attributes: ['id'],
-          where: {
-            id: employeeEstabId,
-          },
         },
         {
           model: Roles,
@@ -66,13 +62,25 @@ class EmployeeController {
     if (req.params.id) {
       users = await User.findByPk(req.params.id, userAttributes);
     } else {
-      users = await User.findAndCountAll(userAttributes);
+      users = await client.query(
+        `select us.cpf, us.id, us.rg, us.name, us.email,
+          r.role as rolename, e.name as estabName, e.id as estabid
+        from "user" us
+        inner join user_establishment
+        on us.id = user_establishment.user_id
+        inner join establishment e
+        on e.id = user_establishment.id
+        inner join role r
+        on us.role = r.id
+        where user_establishment.establishment_id
+        in (${userEstabs.rows.map(el => el.id)});`
+      );
     }
 
     const hasNextPage = AMOUNT_PAGE * page < users.count;
     const hasPreviousPage = page > 1;
 
-    return res.json({ hasPreviousPage, hasNextPage, ...users });
+    return res.json(users);
   }
 }
 

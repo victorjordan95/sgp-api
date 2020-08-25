@@ -1,4 +1,3 @@
-import { Client } from 'pg';
 import {
   startOfMonth,
   lastDayOfMonth,
@@ -6,20 +5,12 @@ import {
   endOfDay,
   format,
 } from 'date-fns';
-import User from '../models/User';
-import databaseConfig from '../../config/database';
+
+import client from '../../database/db';
 
 class DashboardController {
   async indexYear(req, res) {
-    const client = new Client({
-      user: databaseConfig.username,
-      host: databaseConfig.host,
-      database: databaseConfig.database,
-      password: databaseConfig.password,
-      port: 5432,
-    });
     client.connect();
-
     const { estab } = req.query;
 
     const { rows } = await client.query(
@@ -44,13 +35,6 @@ class DashboardController {
   async appointmentsDay(req, res) {
     const { estab } = req.query;
 
-    const client = new Client({
-      user: databaseConfig.username,
-      host: databaseConfig.host,
-      database: databaseConfig.database,
-      password: databaseConfig.password,
-      port: 5432,
-    });
     client.connect();
 
     const done = await client.query(
@@ -64,13 +48,13 @@ class DashboardController {
     );
 
     const cancelled = await client.query(
-      `select count(ap.id), establishment_id
-      from appointment ap
-      where establishment_id = ${estab}
+      `SELECT count(ap.id), establishment_id
+      FROM appointment ap
+      WHERE establishment_id = ${estab}
       AND start >= '${format(startOfDay(new Date()), 'dd-MM-yyyy HH:mm')}'
       AND start <  '${format(endOfDay(new Date()), 'dd-MM-yyyy HH:mm')}'
-      and status = 3
-      group by  establishment_id`
+      AND status = 3
+      GROUP BY establishment_id`
     );
 
     const dataDone = done.rows.map(el => {
@@ -92,15 +76,6 @@ class DashboardController {
 
   async appointmentsMonth(req, res) {
     const { estab } = req.query;
-
-    const client = new Client({
-      user: databaseConfig.username,
-      host: databaseConfig.host,
-      database: databaseConfig.database,
-      password: databaseConfig.password,
-      port: 5432,
-    });
-    client.connect();
 
     const done = await client.query(
       `select count(ap.id), establishment_id
