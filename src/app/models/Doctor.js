@@ -7,6 +7,7 @@ class Doctor extends Model {
         start_hour: Sequelize.STRING,
         end_hour: Sequelize.STRING,
         time_appointment: Sequelize.STRING,
+        coucil_number: Sequelize.STRING,
       },
       {
         sequelize,

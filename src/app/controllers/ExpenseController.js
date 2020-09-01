@@ -11,8 +11,12 @@ class ExpenseController {
   async index(req, res) {
     const { page = 1 } = req.query;
     const { estab } = req.query;
-    const { type, name } = req.query;
+    const { type, columnName } = req.query;
     const AMOUNT_PAGE = 50;
+
+    if (!estab) {
+      return res.json([]);
+    }
 
     let paymentAttributes = {
       limit: AMOUNT_PAGE,
@@ -28,13 +32,13 @@ class ExpenseController {
       ],
     };
 
-    if (name) {
+    if (columnName) {
       paymentAttributes = {
         ...paymentAttributes,
         where: Sequelize.where(
-          Sequelize.fn('unaccent', Sequelize.col(`${type}`)),
+          Sequelize.fn('unaccent', Sequelize.col(`Expense.${columnName}`)),
           {
-            [Op.iLike]: `%${name}%`,
+            [Op.iLike]: `%${type}%`,
           }
         ),
       };
@@ -48,6 +52,12 @@ class ExpenseController {
   async update(req, res) {
     const expense = await Expense.findByPk(req.body.id);
     const updated = await expense.update(req.body);
+    return res.json(updated);
+  }
+
+  async delete(req, res) {
+    const expense = await Expense.findByPk(req.params.id);
+    const updated = await expense.destroy();
     return res.json(updated);
   }
 }

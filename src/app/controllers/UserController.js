@@ -4,7 +4,9 @@ import Contact from '../models/Contact';
 import Doctor from '../models/Doctor';
 import Establishment from '../models/Establishment';
 import File from '../models/File';
+import MedicineCategory from '../models/MedicineCategory';
 import Roles from '../models/Roles';
+import ProfessionalCoucil from '../models/ProfessionalCoucil';
 import User from '../models/User';
 
 class UserController {
@@ -17,9 +19,17 @@ class UserController {
           attributes: ['role', 'id'],
         },
         {
-          model: Establishment,
-          attributes: ['name', 'value', 'label', 'id'],
-          as: 'establishments',
+          model: Doctor,
+          as: 'doctor_info',
+          include: [
+            {
+              model: ProfessionalCoucil,
+            },
+            {
+              model: MedicineCategory,
+              as: 'categories',
+            },
+          ],
         },
         {
           model: Address,

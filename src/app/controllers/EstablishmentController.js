@@ -16,6 +16,10 @@ class EstablishmentController {
       'amount_bed',
       'is_pharmacy',
       'is_public',
+      'value',
+      'label',
+      'status',
+      'id',
     ];
 
     const establishmentAttributes = [
@@ -64,9 +68,6 @@ class EstablishmentController {
           },
         ],
         limit: 50,
-        where: {
-          status: true,
-        },
       };
       establishment = await Establishment.findAndCountAll(query);
       return res.json(establishment);
@@ -109,6 +110,7 @@ class EstablishmentController {
           'amount_bed',
           'is_pharmacy',
           'is_public',
+          'status',
           'location',
         ],
         order: distance,

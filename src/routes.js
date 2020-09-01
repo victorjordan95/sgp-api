@@ -64,6 +64,7 @@ routes.post('/roles', RoleController.store);
 routes.post('/expense', ExpenseController.store);
 routes.put('/expense', ExpenseController.update);
 routes.get('/expense', ExpenseController.index);
+routes.delete('/expense/:id', ExpenseController.delete);
 
 routes.get('/dashboard-year', DashboardController.indexYear);
 routes.get('/dashboard-appointments-day', DashboardController.appointmentsDay);
@@ -72,10 +73,11 @@ routes.get(
   DashboardController.appointmentsMonth
 );
 
-routes.use(isAdmin);
-
 routes.get('/establishment', EstablishmentController.index);
 routes.get('/establishment/:id', EstablishmentController.index);
+
+routes.use(isAdmin);
+
 routes.post('/establishment', EstablishmentController.store);
 routes.put('/establishment', EstablishmentController.update);
 routes.delete('/establishment/:id', EstablishmentController.delete);

@@ -12,15 +12,12 @@ class EmployeeController {
     const { page = 1 } = req.query;
     const AMOUNT_PAGE = 10;
 
-    console.log(req.userId);
     const userEstabs = await client.query(
       `select estab.id from "establishment" as estab
       join user_establishment as uestab
       on estab.id = uestab.establishment_id
       where uestab.user_id = ${req.userId}`
     );
-
-    console.log(userEstabs.rows);
 
     if (!userEstabs) {
       return res.json([]);
