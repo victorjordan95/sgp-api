@@ -45,10 +45,17 @@ class SessionController {
 
   async index(req, res) {
     const { session_token } = req.body;
-    const user = await Session.findOne({ where: { session_token } });
+    const sessionUser = await Session.findOne({ where: { session_token } });
     return res.json({
-      user,
+      sessionUser,
     });
+  }
+
+  async delete(req, res) {
+    const result = await Session.destroy({
+      where: { session_token: req.params.token },
+    });
+    return res.json(result);
   }
 }
 

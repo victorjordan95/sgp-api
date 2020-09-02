@@ -50,6 +50,7 @@ class AppointmentController {
       where: {
         patient_id: req.userId,
         canceled_at: null,
+        status: 2,
         start: { [Op.between]: [startOfDay(start), endOfDay(start)] },
       },
       order: ['start'],

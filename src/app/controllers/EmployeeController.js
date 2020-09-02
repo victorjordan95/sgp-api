@@ -10,6 +10,7 @@ import client from '../../database/db';
 class EmployeeController {
   async index(req, res) {
     const { page = 1 } = req.query;
+    const { type, searchField } = req.query;
     const AMOUNT_PAGE = 10;
 
     const userEstabs = await client.query(
@@ -23,60 +24,46 @@ class EmployeeController {
       return res.json([]);
     }
 
-    const userAttributes = {
-      attributes: ['id', 'name', 'email', 'cpf', 'rg'],
-      limit: AMOUNT_PAGE,
-      offset: (page - 1) * AMOUNT_PAGE,
-      where: {
-        status: true,
-      },
-      include: [
-        {
-          model: Address,
-          as: 'address_pk',
-          attributes: ['city'],
-        },
-        {
-          model: Establishment,
-          as: 'establishments',
-          attributes: ['id'],
-        },
-        {
-          model: Roles,
-          where: {
-            [Op.or]: [
-              { role: RoleEnum.DOCTOR },
-              { role: RoleEnum.EMPLOYEE },
-              { role: RoleEnum.ADMIN },
-            ],
-          },
-        },
-      ],
-    };
-
-    let users;
-    if (req.params.id) {
-      users = await User.findByPk(req.params.id, userAttributes);
-    } else {
-      users = await client.query(
+    let estabs;
+    if (type && searchField) {
+      estabs = await client.query(
         `select us.cpf, us.id, us.rg, us.name, us.email,
+          r.role as rolename, e.name as estabName, e.id as estabid
+          from "user" us
+          left join user_establishment
+          on us.id = user_establishment.user_id
+          left join establishment e
+          on e.id = user_establishment.establishment_id
+          left join role r
+          on us.role = r.id
+          where us.${type} like '%' || unaccent('${searchField}') || '%'
+          and user_establishment.establishment_id
+          in (${JSON.stringify(userEstabs.rows.map(el => el.id))
+            .replace('[', '')
+            .replace(']', '')});`
+      );
+      return res.json(estabs);
+    }
+
+    estabs = await client.query(
+      `select us.cpf, us.id, us.rg, us.name, us.email,
         r.role as rolename, e.name as estabName, e.id as estabid
         from "user" us
-        inner join user_establishment
+        left join user_establishment
         on us.id = user_establishment.user_id
-        inner join establishment e
+        left join establishment e
         on e.id = user_establishment.establishment_id
-        inner join role r
+        left join role r
         on us.role = r.id
         where user_establishment.establishment_id
         in (${JSON.stringify(userEstabs.rows.map(el => el.id))
           .replace('[', '')
           .replace(']', '')});`
-      );
-    }
-    const hasNextPage = AMOUNT_PAGE * page < users.count;
+    );
+    // }
+    const hasNextPage = AMOUNT_PAGE * page < estabs.count;
     const hasPreviousPage = page > 1;
-    return res.json(users);
+    return res.json(estabs);
   }
 }
 

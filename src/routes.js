@@ -29,6 +29,7 @@ routes.post('/session', SessionController.store);
 routes.post('/sessionToken', SessionController.index);
 routes.post('/users', UserController.store);
 routes.get('/city', CityController.index);
+routes.delete('/sessionToken/:token', SessionController.delete);
 
 routes.use(authMiddleware);
 
