@@ -1,12 +1,6 @@
 import * as Yup from 'yup';
 import { Op } from 'sequelize';
-import {
-  startOfMonth,
-  lastDayOfMonth,
-  startOfDay,
-  endOfDay,
-  format,
-} from 'date-fns';
+import { startOfMonth, lastDayOfMonth, startOfDay, endOfDay } from 'date-fns';
 import Appointment from '../models/Appointment';
 import Roles from '../models/Roles';
 import User from '../models/User';

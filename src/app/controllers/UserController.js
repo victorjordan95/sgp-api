@@ -2,7 +2,6 @@ import { Op } from 'sequelize';
 import Address from '../models/Address';
 import Contact from '../models/Contact';
 import Doctor from '../models/Doctor';
-import Establishment from '../models/Establishment';
 import File from '../models/File';
 import MedicineCategory from '../models/MedicineCategory';
 import Roles from '../models/Roles';

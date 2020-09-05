@@ -1,17 +1,10 @@
-import { Op } from 'sequelize';
-import Address from '../models/Address';
-import Establishment from '../models/Establishment';
-import User from '../models/User';
-import Roles from '../models/Roles';
-import RoleEnum from '../enums/Roles.enum';
-
 import client from '../../database/db';
 
 class EmployeeController {
   async index(req, res) {
-    const { page = 1 } = req.query;
+    // const { page = 1 } = req.query;
     const { type, searchField } = req.query;
-    const AMOUNT_PAGE = 10;
+    // const AMOUNT_PAGE = 10;
 
     const userEstabs = await client.query(
       `select estab.id from "establishment" as estab
@@ -36,7 +29,7 @@ class EmployeeController {
           on e.id = user_establishment.establishment_id
           left join role r
           on us.role = r.id
-          where us.${type} like '%' || unaccent('${searchField}') || '%'
+          where lower(us.${type}) like lower('%' || unaccent('${searchField}') || '%')
           and user_establishment.establishment_id
           in (${JSON.stringify(userEstabs.rows.map(el => el.id))
             .replace('[', '')
@@ -60,9 +53,8 @@ class EmployeeController {
           .replace('[', '')
           .replace(']', '')});`
     );
-    // }
-    const hasNextPage = AMOUNT_PAGE * page < estabs.count;
-    const hasPreviousPage = page > 1;
+    // const hasNextPage = AMOUNT_PAGE * page < estabs.count;
+    // const hasPreviousPage = page > 1;
     return res.json(estabs);
   }
 }

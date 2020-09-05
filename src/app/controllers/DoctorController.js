@@ -1,4 +1,3 @@
-import { Op } from 'sequelize';
 import Address from '../models/Address';
 import Establishment from '../models/Establishment';
 import Roles from '../models/Roles';

@@ -56,9 +56,7 @@ class ExpenseController {
   }
 
   async delete(req, res) {
-    const expense = await Expense.findByPk(req.params.id);
-    const updated = await expense.destroy();
-    return res.json(updated);
+    return res.json(await Expense.destroy({ where: { id: req.params.id } }));
   }
 }
 
