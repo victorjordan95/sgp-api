@@ -1,4 +1,6 @@
-import { Router } from 'express';
+import {
+  Router
+} from 'express';
 import multer from 'multer';
 import multerConfig from './config/multer';
 
@@ -42,6 +44,7 @@ routes.get('/patients', PatientController.index);
 routes.get('/employees', EmployeeController.index);
 
 routes.get('/doctors', DoctorController.index);
+routes.get('/doctors/:id', DoctorController.findDoctor);
 routes.get('/doctor/:doctorId/available', AvailableController.index);
 
 routes.get('/users/:id', UserController.index);
@@ -77,13 +80,13 @@ routes.get(
 routes.get('/establishment', EstablishmentController.index);
 routes.get('/establishment/:id', EstablishmentController.index);
 
-routes.use(isAdmin);
+routes.post('/payment', PaymentController.store);
+routes.get('/payment', PaymentController.index);
+
+// routes.use(isAdmin);
 
 routes.post('/establishment', EstablishmentController.store);
 routes.put('/establishment', EstablishmentController.update);
 routes.delete('/establishment/:id', EstablishmentController.delete);
-
-routes.post('/payment', PaymentController.store);
-routes.get('/payment', PaymentController.index);
 
 export default routes;
