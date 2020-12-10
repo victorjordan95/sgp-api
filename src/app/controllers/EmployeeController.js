@@ -2,9 +2,10 @@ import client from '../../database/db';
 
 class EmployeeController {
   async index(req, res) {
-    // const { page = 1 } = req.query;
-    const { type, searchField } = req.query;
-    // const AMOUNT_PAGE = 10;
+    const {
+      type,
+      searchField
+    } = req.query;
 
     const userEstabs = await client.query(
       `select estab.id from "establishment" as estab
@@ -17,9 +18,9 @@ class EmployeeController {
       return res.json([]);
     }
 
-    let estabs;
+    let employees;
     if (type && searchField) {
-      estabs = await client.query(
+      employees = await client.query(
         `select us.cpf, us.id, us.rg, us.name, us.email,
           r.role as rolename, e.name as estabName, e.id as estabid
           from "user" us
@@ -35,10 +36,10 @@ class EmployeeController {
             .replace('[', '')
             .replace(']', '')});`
       );
-      return res.json(estabs);
+      return res.json(employees);
     }
 
-    estabs = await client.query(
+    employees = await client.query(
       `select us.cpf, us.id, us.rg, us.name, us.email,
         r.role as rolename, e.name as estabName, e.id as estabid
         from "user" us
@@ -53,9 +54,7 @@ class EmployeeController {
           .replace('[', '')
           .replace(']', '')});`
     );
-    // const hasNextPage = AMOUNT_PAGE * page < estabs.count;
-    // const hasPreviousPage = page > 1;
-    return res.json(estabs);
+    return res.json(employees);
   }
 }
 
